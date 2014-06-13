@@ -477,6 +477,18 @@ finally:
     <executes no matter what>
 \end{verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Threading}
+\begin{itemize}
+	\item \verb|from threading import Thread|
+	\item \verb|t1 = Thread(target=function, args=(arg1,arg2))|
+	\item \verb|t1.start()|
+	\item join function is used to collect threads i.e. calling function waits on this line until the thread is finished.
+\end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Miscellaneous}
+\subsection{if \_\_name\_\_ == `\_\_main\_\_'}
+The interpreter assigns \_\_main\_\_ to the \_\_name\_\_ of the currently executing module. That is, if a module is not imported, rather it is the one which is being executed then it happens.
 
 \end{document}
