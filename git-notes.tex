@@ -1,0 +1,24 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Notes on Git}
+\author{Nazmus Saquib}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Creating a Repo and Adding to Github}
+Make sure ssh keys are set -- https://help.github.com/articles/generating-ssh-keys
+\begin{verbatim}
+git init
+git add filename
+git commit -m "the message"
+curl -u 'saquib2527' https://api.github.com/user/repos -d '{"name": "reponame"}'
+git remote add orgin git@github.com:saquib2527/reponame.git
+git push origin master
+\end{verbatim}
+
+\end{document}
