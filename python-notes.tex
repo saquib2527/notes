@@ -1,0 +1,482 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{alltt}
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Notes on Python 2}
+\author{Nazmus Saquib}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Basics}
+
+%---------------------------------------------------%
+\subsection{print}
+In Python 2, print can be treated as both a function and a special statement.
+\begin{verbatim}
+>>> print("Hello World!")
+Hello World!
+>>> print "Hello World!"
+Hello World!
+\end{verbatim}
+However, in Python 3, only the former is valid.
+
+When printing using parentheses, if there is a comma between two strings, the argument supplied to \emph{print} would be considered to be a tuple. Otherwise a space would be inserted.
+\begin{verbatim}
+>>> print("Hello", "World")
+('Hello', 'World')
+>>> print "Hello", "World"
+Hello World
+>>> print(1)
+1
+>>> print(1,)
+(1,)
+\end{verbatim}
+
+We can write variables within string by using plus sign, but we need to cast numerical values to strings.
+\begin{verbatim}
+num = 10
+square = 100
+print("the square of " + str(num) + " is " + str(square))
+the square of 10 is 100
+\end{verbatim}
+
+
+%---------------------------------------------------%
+\subsection{input}
+If \emph{input} is used user should enclose input using quotes. If raw\_input is used input should not be enclosed in quotes.
+In Python 3 raw\_input has been discontinued. We can get the numerical value of a string representation by the \emph{eval} function.
+\begin{verbatim}
+>>> fname = input("Enter first name: ")
+Enter first name: "Nazmus"
+>>> print(fname)
+Nazmus
+>>> lname = raw_input("Enter last name: ")
+Enter last name: Saquib
+>>> print(lname)
+Saquib
+>>> nname = raw_input("Enter nickname: ")
+Enter nickname: "saquib2527"
+>>> print(nname)
+"saquib2527"
+>>> sqrt = raw_input("Enter number to be squared: ")
+Enter number to be squared: 10
+>>> print(eval(sqrt) * eval(sqrt))
+100
+\end{verbatim}
+
+
+%---------------------------------------------------%
+\subsection{comments}
+We use hash (\#) for single line comments and three consecutive single quotes (\verb|'''|) to enclose multiline comments.
+\begin{verbatim}
+#this is a single line comment
+'''
+this is a
+multiline comment
+'''
+print("comments above")
+\end{verbatim}
+
+
+%---------------------------------------------------%
+\subsection{continuity of line}
+Backslash at the end denotes continuity of line.
+\begin{verbatim}
+sum = 1 + 2 + 3 + 4 + \
+      5 + 6
+\end{verbatim}
+
+
+%---------------------------------------------------%
+\subsection{multiple assignment}
+It is possible to assign each of the right hand side value to corresponding left hand side value. Swapping is one such example.
+\begin{verbatim}
+x, y = y, x
+\end{verbatim}
+
+
+%---------------------------------------------------%
+\subsection{operators}
+Double forward slash (//) stands for integer division, double asterisk (**) for raising a number to a power. In Python 2 it is necessary to use at least one floating point number for floating point division.
+\begin{verbatim}
+>>> 5 / 2
+2
+>>> 5.0 / 2
+2.5
+>>> 5.0 // 2
+2
+\end{verbatim}
+
+
+%---------------------------------------------------%
+\subsection{math}
+To floor a floating point number we can cast to int. \emph{round} function rounds the number.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Strings and Characters}
+Character to ASCII conversion and vice versa can be accomplished using \emph{ord} and \emph{chr} functions.
+\begin{verbatim}
+>>> ord('a')
+97
+>>> chr(97)
+'a'
+\end{verbatim}
+
+Strings can be converted to lowercase or uppercase.
+\begin{verbatim}
+>>> name = "Nazmus Saquib"
+>>> name.lower()
+'nazmus saquib'
+>>> name
+'Nazmus Saquib'
+>>> name.upper()
+'NAZMUS SAQUIB'
+>>> name
+'Nazmus Saquib'
+\end{verbatim}
+
+\emph{strip} is used for stripping whitespace characters \verb|(' ', \t, \n, \r)| from both ends
+\begin{verbatim}
+>>> name = "     Humpty     "
+>>> name
+'     Humpty     '
+>>> name.strip()
+'Humpty'
+\end{verbatim}
+
+\emph{len} returns length of the string, \emph{max} the greatest character and \emph{min} smallest.
+
+Indexing with a negative number represents relative indexing to the end of the string.
+\begin{verbatim}
+>>> s = "welcome"
+>>> s[-2]
+'m'
+\end{verbatim}
+
+The slicing operator returns a substring starting from one index till one index less than the second i.e. first index inclusive, second index exclusive.
+\begin{verbatim}
+>>> s = "welcome"
+>>> s[1 : 4]
+'elc'
+\end{verbatim}
+
+We can repeat using the \emph{*} character
+\begin{verbatim}
+>>> print("Hello" + '.' * 10 + "how are you?")
+Hello..........how are you?
+\end{verbatim}
+
+Substring presence can be checked using \emph{in} and \emph{not in} functions.
+\begin{verbatim}
+>>> s = "welcome"
+>>> 'come' in s
+True
+>>> 'home' not in s
+True
+\end{verbatim}
+
+Strings can be compared with normal comparison operators. For string testing there are few functions. The following functions are invoked as \emph{string.function()}
+\begin{description}
+\item[isalnum] returns true if string contains both alphabets and numbers
+\item[isalpha] returns true if string contains only alphabets
+\item[isdigit] returns true if string contains only numbers
+\item[isidentifier] returns true if string is a Python identifier
+\item[islower] returns true if string contains only lowercase alphabets
+\item[isupper] returns true if string contains only uppercase alphabets
+\item[isspace] returns true if string contains only whitespace characters
+\item[endswith(str)] returns true if the invoking string ends with str
+\item[startswith(str)] returns true if the invoking string starts with str
+\item[find(str)] returns the index where first instance of str starts, -1 if absent
+\item[rfind(str)] returns the index where last instance of str starts, -1 if absent
+\item[count(str)] returns number of non overlapping occurrences of str
+\item[capitalize] returns a string with first letter capitalized
+\item[title] capitalizes first letter of each word
+\item[swapcase] converts lowercase letters to uppercase and vice versa
+\item[replace(old, new)] returns a string with all the occurrences of old replaced by new
+\item[lstrip] removes leading whitespaces
+\item[rstrip] removes trailing whitespaces
+\item[split(delimiter)] splits the string based on the delimiter and puts in a list
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Basic Data Structures}
+
+%---------------------------------------------------%
+\subsection{lists}
+Ordered collection of objects, can contain mixed types.
+
+Lists can be shuffled using shuffle function under random module, in this case the list will be changed.
+
+Lists may be compared using the comparison operators. For this the type of elments should be same in the two lists.
+
+Lists are passed by reference.
+
+\begin{description}
+\item[var = []] creates empty list
+\item[var = list()] creates empty list
+\item[var = [2, 3, "name"]] creation and initialization
+\item[len] returns the number of elements in a list
+\item[max] returns maximum valued object from a list
+\item[min] returns minimum valued object from a list
+\item[sum] returns addition of the list elements provided elements are numerical
+\item[var[-1]] return the last element
+\item[var[start : end]] returns another list, start inclusive but end is exclusive
+\item[list1 + list2] returns a new list with the elments in two lists
+\item[n * list1] creates a new list using one list n times
+\item[in, not in] checks if element present or absent in list
+\item[for x in mylist] iterates over the list, x containing the current element
+\item[list1 = [x for x in range(5)]] list1 contains 0, 1, 2, 3, 4
+\item[list2 = [0.5 * x for x in list1]] list2 contains each element of list1 halved
+\item[list3 = [x for x in list2 if x \textless 1.5]] list3 contains elements of list2 that are less than 1.5
+\item[var.append(element)] appends element to var
+\item[var.count(element)] returns how many times element is in var
+\item[list1.extend(list2)] appends all elements of list2 to list1
+\item[list1.index(element)] returns the index of element in list1
+\item[list1.insert(index, element)] inserts element at index of list1
+\item[list1.pop(index)] removes and returns the element at index of list1
+\item[list1.pop()] removes and returns the last element of list1
+\item[list1.remove(element)] remove element from list1
+\item[list1.sort()] sorts the list in ascending order
+\item[list1.reverse()] reverses the list
+\item[list2 = list1] list2 points to list1, any change made to list2 implies a change in list1, as they are actually the same list
+\item[list2 = [] + list1] list2 now contains a copy of list1
+\item[list2 = [x for x in list1]] list2 now contains a copy of list1
+\end{description}
+
+%---------------------------------------------------%
+\subsection{tuple}
+Tuples are like lists, but we cannot add or delete elements to it, nor can we reorder elements or replace elements. Although some tuples are immutable (those of integers or strings), some tuples can be mutable -- such as tuples having objects whose attributes can be changed.
+
+We can use len, max, min and sum functions as before. Slice operator has similar usage. We can also denote the last element using negative 1 index.
+\begin{verbatim}
+>>> t1 = ()
+>>> t2 = (1, 2, 3)
+>>> t3 = ([x for x in range(1, 4)])
+\end{verbatim}
+
+%---------------------------------------------------%
+\subsection{set}
+Unordered, does not contain any duplicate. Len, max, min and sum works as before.
+
+\begin{verbatim}
+>>> s1 = set() #notice curly braces would have created empty dictionary
+>>> s2 = {1, 2, 3}
+\end{verbatim}
+
+Sets are more efficient than lists when it comse to in, not in and remove operations.
+\begin{description}
+\item[s.add(element)] add element to set
+\item[s.remove(element)] remove element from set
+\item[s1.subset(s2)] returns true if s1 is a subset of s2
+\item[s1.superset(s2)] returnss true if s1 is a superset of s2
+\item[s1.union(s2)] returns a set formed by union of s1 and s2
+\item[s1 | s2] same as union
+\item[s1.intersection(s2)] returns a set formed by intersection of s1 and s2
+\item[s1 \& s2] same as intersection
+\item[s1.difference(s2)] set difference of s2 from s1
+\item[s1 - s2] same as set difference of s2 from s1
+\item[s1.symmetric\_difference(s2)] elements that are in either of s1 or s2, but not in both
+\item[s1 \^ s2] same as symmetric difference
+\end{description}
+
+%---------------------------------------------------%
+\subsection{dictionary}
+A container object that stores a list of key/value pairs. Enables fast retrieval, deletion, and updating of the value by key.
+
+\begin{verbatim}
+>>> players = {"gk": "sczezney", "rw": "walcott", "cf": "giroud"}
+>>> players["rw"]
+'walcott'
+>>> players.get("rw")
+'walcott'
+>>> del players["rw"]
+>>> len(players)
+2
+>>> "cb" in players
+False
+>>> players["rw"] = "walcott"
+>>> players.keys()
+['gk', 'cf', 'rw']
+>>> players.values()
+['sczezney', 'giroud', 'walcott']
+>>> players.pop("cf")
+'giroud'
+>>> players.clear()
+>>> players
+{}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example: for, while, if}
+\begin{verbatim}
+'''
+addition quiz
+generates two integers between 1 and 100 (inclusive)
+shows how many tried, how many correct, percentage of success
+also grade received
+'''
+
+import random
+import sys
+
+tried = 0
+correct = 0
+percentage = 0.0
+
+start = 1
+end = 100
+
+for x in range(1, 50):
+    sys.stdout.write('*')
+print('*')
+
+while True:
+    num1 = random.randint(start, end)
+    num2 = random.randint(start, end)
+
+    result = num1 + num2
+
+    ans = raw_input("what is " + str(num1) + " + " + str(num2) + \
+	      "?<Q to quit exercise> ")
+
+    if(ans == 'Q' or ans == 'q'):
+        break
+    else:
+        tried += 1
+        if result == eval(ans):
+            print("correct!")
+            correct += 1
+        else:
+            print("sorry, wrong answer")
+
+for x in range(1, 50):
+    sys.stdout.write('-')
+print('-')
+
+if tried > 0:
+    print("tried: " + str(tried) + "\tcorrect: " + str(correct))
+    percentage = "%.2f" % round((correct / float(tried)) * 100, 2)
+    print("percentage of success: " + str(percentage))
+    
+    print("grade received:"),
+
+    if percentage >= 80:
+        print("A")
+    elif percentage >= 70:
+        print("B")
+    elif percentage >= 60:
+        print("C")
+    else:
+        print("F")
+
+print("see you later!")
+
+for x in range(1, 50):
+    sys.stdout.write('*')
+print('*')
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Functions}
+Python supports both positional and keyword arguments. Positional arguments can never be put after keyword arguments.
+\begin{verbatim}
+def sum(first, last):
+    return first + last
+
+sum(1, 2)
+sum(1, last = 2)
+#following not allowed
+#sum(first = 1, 2)
+\end{verbatim}
+
+Non-default parameters must come before defaults.
+
+Functions can return multiple values.
+\begin{verbatim}
+def partition(dividend, divisor):
+    q = dividend / divisor
+	r = dividend % divisor
+
+	return q, r
+
+q, r = partition(5, 2)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Object Oriented Programming}
+Precede the name of private variables and methods with double underscores.
+
+Snake case preferred for most functions name, unless legacy maintenance required.
+
+Every methods first argument should be \emph{self}
+
+Every class is descendant form \emph{object} class
+
+The \emph{isinstance} function returns true if first (object) parameter is an instance of the second parameter (a class).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Files}
+\begin{description}
+	\item[open(filename, mode)] open a file in the specified mode
+	\item[f.close()] closes the file pointed to by f
+	\item[f.read()] reads the full file characterwise
+	\item[f.read(n)] reads n characters, further read command starts from what is left
+	\item[f.readline()] reads one line
+	\item[f.readlines()] reads all lines and puts in a list
+	\item[f.write(str)] writes str to file
+\end{description}
+
+\subsection{Binary I/O}
+Serializing is the process of converting an object into a stream of bytesthat can be saved to a file or transmitted over a network. Desirializing is the opposite process that extracts an object from a stream of bytes. Serializing/unserializing is also known as pickling/unpickling or dumping/loading.
+\begin{verbatim}
+import pickle
+
+outfile = open("test.txt", "wb")
+pickle.dump(45, outfile)
+pickle.dump(56.6, outfile)
+pickle.dump("programming is fun", outfile)
+pickle.dump([1, 2, 3, 4], outfile)
+outfile.close()
+
+outfile = open("test.txt", "rb")
+print(pickle.load(outfile))
+print(pickle.load(outfile))
+print(pickle.load(outfile))
+print(pickle.load(outfile))
+outfile.close()
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exceptions}
+Excepts are tried sequentially, once matched rest are skipped.
+
+Else block is optional, executes when no exception occurs.
+
+Finally is also optional, if used always executes. Generally used for clean up routines.
+
+Notice exception type is optional.
+
+We can raise exception by invoking \emph{raise exceptionType}
+\begin{verbatim}
+try:
+    <code>
+except exceptionType1:
+    <handler1>
+except exceptionType2:
+    <handler2>
+except:
+    <handler>
+else:
+    <no exception occurred>
+finally:
+    <executes no matter what>
+\end{verbatim}
+
+
+
+\end{document}
