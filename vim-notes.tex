@@ -1,0 +1,142 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Vim Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Help}
+\begin{description}
+	\item[:help command] shows help for command
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Setting Options}
+\begin{description}
+	\item[:set number] shows line number
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Saving a File}
+\begin{description}
+	\item[:w] write
+	\item[:w filename] save as given filename
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Qutting Vim}
+\begin{description}
+	\item[:q] quit
+	\item[:wq] write and quit
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Editing}
+\begin{description}
+	\item[x] deletes the character under the cursor	
+	\item[u] undo
+	\item[dw] delete word starting from current letter to end of the current word, repeaters allowed such as 2dw / d2w
+	\item[db] deletes previous word, repeaters allowed
+	\item[cw] delete the word and put it in insert mode
+	\item[dd] delete whole line, repeaters allowed
+	\item[cc] change whole line, repeaters allowed
+	\item[ci"] change inside double quotes; works with single quotes, parentheses, curly braces, square brackets.
+	\item[ca"]change inside double quotes along with the quotes; works with single quotes, parentheses, curly braces, square brackets.
+
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Movements}
+Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
+\begin{description}
+	\item[h] move left
+	\item[j] move down
+	\item[k] move up
+	\item[l] move right
+	\item[:line-number] jump to the given line number
+	\item[w] jump to next word
+	\item[b] go back a word
+	\item[B] go back a word delimited by whitespace
+	\item[W] jump to next word delimited by whitespace
+	\item[e] jump to end of next word
+	\item[E] jump to end of next word delimited by whitespace
+	\item[\$] jump to end of current line
+	\item[\^] jump to start of current line
+	\item[0] real beginning of the line i.e. does not ignore whitespaces
+	\item[gg] jump to beginning of the file
+	\item[G] jump to end of the file
+	\item[\}] jump to the next paragraph
+	\item[\{] jump to the previous paragraph
+	\item[f then a character] go to the first occurrence of character while moving forward
+	\item[F then a chracter] move to the first occurrence of charater while moving backward
+	\item[t then a character] moves the cursor just before the first occurrence of character while moving forward
+	\item[T then a character] moves the cursor just after the first occurrence of character while moving backward
+	\item[number t/T/f/F character] find the nth occurrence of the character
+	\item[\%] when on one parentheses/curly brace/square bracket, jumps to the matching one
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modes}
+\begin{description}
+	\item[i] insert
+	\item[ESC] command mode
+	\item[v] visual
+	\item[SHIFT+v] visula line
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Searching}
+\begin{description}
+	\item[/search-term] searches forward
+	\item[n] steps to the next match
+	\item[N] steps to the previous match
+	\item[?search-term] searches backwards, the meaning of \emph{n} and \emph{N} changes accordingly
+	\item[:set incsearch] set incremental search, that is searches as each letter is typed
+	\item[:set ignorecase] ignores case while searching
+	\item[:set hlsearch] highlights the matched words
+	\item[:nohlsearch] disables highlight, same as \emph{noh}
+	\item[\\n\\n] searches blank lines
+\end{description}
+
+\begin{itemize}
+	\item vim remembers the recent search, so typing \emph{n} or \emph{N} we can navigate through the matches 
+	\item we can also search regular expressions
+	\item \emph{d} and then \emph{/search-term} deletes everything from where the cursor is to the first match, also works with \emph{c} and \emph{y}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Substitution}
+\begin{description}
+	\item[:s/old/new] replace first occurrence of old with new in the current line 
+	\item[:\%s/old/new] replace first occurrence of old with new in each line
+	\item[:\%s/old/new/g] replace all occurrences of old with new in each line
+	\item[:\%s/old/new/c] asks for confirmation before replacing
+	\item[:\%s/old/new/i] ignores case
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Move current Line at different Position of Screen}
+\begin{description}
+	\item[zt] move current line to top of screen
+	\item[zb] move current line to bottom of screen
+	\item[z.] move current line to center of screen
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{.vimrc File}
+The .vimrc file is situated at the home directory. We can save our preferences here. If we want the effect of vimrc to take place immediately without restarting vim, we have to do a \verb|:source ~/.vimrc|.
+
+%-------------------------------------------------%
+\subsection{sample vimrc file}
+\begin{verbatim}
+syntax on
+set number
+\end{verbatim}
+
+\end{document}
