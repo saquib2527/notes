@@ -343,7 +343,7 @@ while True:
     result = num1 + num2
 
     ans = raw_input("what is " + str(num1) + " + " + str(num2) + \
-	      "?<Q to quit exercise> ")
+          "?<Q to quit exercise> ")
 
     if(ans == 'Q' or ans == 'q'):
         break
@@ -401,9 +401,9 @@ Functions can return multiple values.
 \begin{verbatim}
 def partition(dividend, divisor):
     q = dividend / divisor
-	r = dividend % divisor
+    r = dividend % divisor
 
-	return q, r
+    return q, r
 
 q, r = partition(5, 2)
 \end{verbatim}
@@ -423,13 +423,13 @@ The \emph{isinstance} function returns true if first (object) parameter is an in
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Files}
 \begin{description}
-	\item[open(filename, mode)] open a file in the specified mode
-	\item[f.close()] closes the file pointed to by f
-	\item[f.read()] reads the full file characterwise
-	\item[f.read(n)] reads n characters, further read command starts from what is left
-	\item[f.readline()] reads one line
-	\item[f.readlines()] reads all lines and puts in a list
-	\item[f.write(str)] writes str to file
+    \item[open(filename, mode)] open a file in the specified mode
+    \item[f.close()] closes the file pointed to by f
+    \item[f.read()] reads the full file characterwise
+    \item[f.read(n)] reads n characters, further read command starts from what is left
+    \item[f.readline()] reads one line
+    \item[f.readlines()] reads all lines and puts in a list
+    \item[f.write(str)] writes str to file
 \end{description}
 
 \subsection{Binary I/O}
@@ -481,11 +481,52 @@ finally:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Threading}
 \begin{itemize}
-	\item \verb|from threading import Thread|
-	\item \verb|t1 = Thread(target=function, args=(arg1,arg2))|
-	\item \verb|t1.start()|
-	\item join function is used to collect threads i.e. calling function waits on this line until the thread is finished.
+    \item \verb|from threading import Thread|
+    \item \verb|t1 = Thread(target=function, args=(arg1,arg2))|
+    \item \verb|t1.start()|
+    \item join function is used to collect threads i.e. calling function waits on this line until the thread is finished.
+    \item if threading.Thread is inherited we should overload the run method
 \end{itemize}
+
+%----------------------------------------------------%
+\subsection{example code}
+\begin{verbatim}
+from threading import Thread
+import urllib
+import re
+import time
+
+def th(ur):
+    regex = "<title>.+?</title>"
+    pattern = re.compile(regex)
+    htmltext = urllib.urlopen(ur).read()
+    results = re.findall(pattern, htmltext)
+    print results
+
+urls = "http://google.com http://cnn.com http://yahoo.com \
+        http://wikipedia.com".split()
+
+threadlist = []
+
+start = time.time()
+
+for u in urls:
+    t = Thread(target = th, args = (u,))
+    t.start()
+    threadlist.append(t)
+
+for b in threadlist:
+    b.join()
+
+print("Multithreaded: %s" % (time.time() - start,))
+
+start = time.time()
+
+for u in urls:
+    th(u)
+
+print("Sequential: %s" % (time.time() - start,))
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Miscellaneous}
