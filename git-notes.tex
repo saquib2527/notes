@@ -8,6 +8,7 @@
 \author{Nazmus Saquib}
 
 \maketitle
+\tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Creating a Repo and Adding to Github}
@@ -19,6 +20,15 @@ git commit -m "the message"
 curl -u 'saquib2527' https://api.github.com/user/repos -d '{"name": "reponame"}'
 git remote add orgin git@github.com:saquib2527/reponame.git
 git push origin master
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Removing a File from Git}
+We might nee to force removal with \emph{-f} flag after rm. Last line will be required if we are using a remote repo. Notice this actually removes the file from both repo and file system. To only remove from repo we need to use \emph{--cached} flag after rm.
+\begin{verbatim}
+git rm filename
+git commit -m "removed filename"
+git push add origin
 \end{verbatim}
 
 \end{document}
