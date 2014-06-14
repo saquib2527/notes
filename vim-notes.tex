@@ -38,17 +38,22 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Editing}
+Every deletion command is a cut command.
 \begin{description}
 	\item[x] deletes the character under the cursor	
+	\item[X] deletes character right behind the cursor
 	\item[u] undo
 	\item[dw] delete word starting from current letter to end of the current word, repeaters allowed such as 2dw / d2w
 	\item[db] deletes previous word, repeaters allowed
 	\item[cw] delete the word and put it in insert mode
 	\item[dd] delete whole line, repeaters allowed
+	\item[dj] delete the current line and the next
 	\item[cc] change whole line, repeaters allowed
 	\item[ci"] change inside double quotes; works with single quotes, parentheses, curly braces, square brackets.
 	\item[ca"]change inside double quotes along with the quotes; works with single quotes, parentheses, curly braces, square brackets.
-
+	\item[y] yank, everything that worked with \emph{d} works with \emph{y}
+	\item[p] paste after the cursor, repeaters allowed
+	\item[P] paste before the cursor, repeaters allowed
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,6 +84,14 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 	\item[T then a character] moves the cursor just after the first occurrence of character while moving backward
 	\item[number t/T/f/F character] find the nth occurrence of the character
 	\item[\%] when on one parentheses/curly brace/square bracket, jumps to the matching one
+\end{description}
+
+%-------------------------------------------------%
+\subsection{Move current Line at different Position of Screen}
+\begin{description}
+	\item[zt] move current line to top of screen
+	\item[zb] move current line to bottom of screen
+	\item[z.] move current line to center of screen
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,15 +133,38 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 	\item[:\%s/old/new/i] ignores case
 \end{description}
 
+%------------------------------------------------%
+\subsection{remove leading whitespace}
+\begin{verbatim}
+:%s/^\s\+
+\end{verbatim}
+\begin{itemize}
+	\item \emph{\%} is for all lines
+	\item first \emph{s} for substitution
+	\item \emph{\^} for denoting starting
+	\item \emph{\textbackslash s} denotes whitespaces
+	\item \emph{\textbackslash +} denotes one or more occurrence
+\end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Move current Line at different Position of Screen}
+\section{Macros}
+Macros are used to execute repeated tasks.
+\begin{enumerate}
+	\item \emph{q} denotes start of macro recording, also deotes the end	
+	\item it is followed by the name of a register, which can be any character or digit
+	\item next we carry out a series of commands
+	\item after finishing recording, we can execute the macro on a register by using \verb|@regname| syntax
+	\item to execute multiple times, we can put a number before \verb|@regname|
+	\item if we want to execute the last macro again, we can use \verb|@@|
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Registers}
 \begin{description}
-	\item[zt] move current line to top of screen
-	\item[zb] move current line to bottom of screen
-	\item[z.] move current line to center of screen
+	\item[:registers] shows a list of registers	
 \end{description}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{.vimrc File}
 The .vimrc file is situated at the home directory. We can save our preferences here. If we want the effect of vimrc to take place immediately without restarting vim, we have to do a \verb|:source ~/.vimrc|.
 
