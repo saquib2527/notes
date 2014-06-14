@@ -1,0 +1,57 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Scraping Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{BeautifulSoup}
+
+%------------------------------------------------%
+\subsection{installation}
+Any of the following commands will install BeautifulSoup4.
+\begin{itemize}
+\item \verb|sudo apt-get install python-bs4|
+\item \verb|sudo pip install beautifulsoup4|
+\item \verb|sudo easy_install beautifulsoup4|
+\end{itemize}
+
+%------------------------------------------------%
+\subsection{basics}
+\begin{itemize}
+\item first we need to import BeautifulSoup.
+\begin{verbatim}
+from bs4 import BeautifulSoup
+\end{verbatim}
+\item BeautifulSoup does not retrieve content from the net. We have to do it ourselves using \emph{urllib2} module.
+\begin{verbatim}
+import urllib2
+content = urllib2.urlopen("http://www.pythonforbeginners.com").read()
+\end{verbatim}
+\item Now we can create a soup object from the content.
+\begin{verbatim}
+soup = BeautifulSoup(content)
+\end{verbatim}
+\end{itemize}
+
+%-------------------------------------------------%
+\subsection{difference between soup.title and soup.title.string}
+\emph{soup.title} returns the title enclosed in title tags, whereas \emph{soup.title.string} returns the string within.
+
+%-------------------------------------------------%
+\subsection{retrieving all anchor tags}
+\begin{verbatim}
+anchors = soup.find_all('a')
+for anchor in anchors:
+    if anchor.has_attr("href"):
+        print(anchor["href"])
+\end{verbatim}
+Instead of \verb|anchor["href"]|, \verb|anchor.get("href")| would also have worked.
+
+\end{document}
