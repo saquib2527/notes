@@ -54,6 +54,49 @@ Every deletion command is a cut command.
 	\item[y] yank, everything that worked with \emph{d} works with \emph{y}
 	\item[p] paste after the cursor, repeaters allowed
 	\item[P] paste before the cursor, repeaters allowed
+	\item[o] inserts line after the current line
+	\item[O] inserts line before the current line
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Indentation}
+\begin{description}
+	\item[\textgreater\textgreater] one unit of indentation, repeaters allowed
+	\item[\textless\textless] removes one unit of indentation, repeaters allowed
+	\item[:set list] shows invisible characters, dollar represents newline whereas caret plus capital i represents tab
+	\item[:set nolist] hides invisible characters
+	\item[:set expandtab] expands tabs to spaces
+	\item[:set noexpandtab] converts tabs to spaces
+	\item[:set shiftwidth=4] sets tab equal to 4 spaces
+	\item[:set smartindent] smart indentation when inserting new line
+	\item[=3j] indent 3 lines correctly, works with other movements too
+	\item[:set softtabstop=4] sets tabbed indentation length to 4 while in insert mode
+	\item[CTRL+t] indent in insert mode
+	\item[CTRL+d] remove indentation in insert mode
+\end{description}
+
+%------------------------------------------------%
+\subsection{indentation in visula line mode}
+\begin{itemize}
+	\item enter visual line mode by pressing \verb|SHIFT+v|
+	\item make selection, if it is needed to go to the first line of selection type \emph{o}
+	\item to add indentation type \textgreater, to remove type \textless
+	\item to reselect, just type gv
+	\item we can use \emph{=} sign for standard indentation
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Folding}
+\begin{description}
+	\item[zf5j] creates a fold of six lines including the current line and 5 lines below it
+	\item[zo] opens fold
+	\item[zc] closes fold
+	\item[zd] deletes fold
+	\item[zi] to go back and forth on opening and closing folds
+	\item[:set foldmethod=syntax] folds according to program syntax
+	\item[zC] close all folding from where we are
+	\item[zO] open all folding from where we are
+	\item[:set foldmarker=\{\{\{,\}\}\}] folds based on passed arguments to foldmarker
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,14 +119,24 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 	\item[0] real beginning of the line i.e. does not ignore whitespaces
 	\item[gg] jump to beginning of the file
 	\item[G] jump to end of the file
-	\item[\}] jump to the next paragraph
-	\item[\{] jump to the previous paragraph
+\item[\}] jump to the next paragraph
+\item[\{] jump to the previous paragraph
 	\item[f then a character] go to the first occurrence of character while moving forward
 	\item[F then a chracter] move to the first occurrence of charater while moving backward
 	\item[t then a character] moves the cursor just before the first occurrence of character while moving forward
 	\item[T then a character] moves the cursor just after the first occurrence of character while moving backward
 	\item[number t/T/f/F character] find the nth occurrence of the character
 	\item[\%] when on one parentheses/curly brace/square bracket, jumps to the matching one
+	\item[CTRL+d] jump half a screen down
+	\item[CTRL+u] jump half a screen up
+	\item[CTRL+f] move one entire screen forward
+	\item[CTRL+b] move one entire screen backward
+	\item[H] goes to top of the window, repeaters allowed
+	\item[M] goes to middle of the window
+	\item[L] goes to the bottom of the window, repeaters allowed
+	\item[ma] set marker and save at register a
+	\item['a] go to marker saved at register a
+	\item[''] jumps back where it was
 \end{description}
 
 %-------------------------------------------------%
@@ -147,6 +200,38 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Buffers}
+Current buffer is marked with \emph{\%a} and the previous buffer with \emph{\#} 
+\begin{description}
+	\item[:ls] shows currently opened buffers	
+	\item[:bnext] navigate to the next buffer, same as \emph{:bn}
+	\item[:bp] navigate to the previous buffer, works same as \emph{:b\#}; can be used for moving back and forth
+	\item[:bf] move to the first buffer
+	\item[:bd] delete current buffer
+	\item[:bd12] delete buffer number 12
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Windows and Tabs}
+\begin{description}
+	\item[:split filename] opens file in a horizontal split
+	\item[:vsplit filename] opens file in a vertical split
+	\item[CTRL+ww] switch among splits
+	\item[CTRL+w then h,j,k,l] move among splits
+	\item[CTRL+w,SHIFT+l] swap left and right splits
+	\item[CTRL+w,+] increases height of split by 1, repeaters allowed
+	\item[CTRL+w,-] decreases height of split by 1, repeaters allowed
+	\item[CTRL+w,\textgreater] increase width of split by 1, repeaters allowed
+	\item[CTRL+w,\textless] decreases width of split by 1, repeaters allowed
+	\item[CTRL+w,=] equal distribution of height and width
+	\item[:sb2] opens buffer number 2 as horizontal split
+	\item[:vert sb2] opens buffer number 2 as vertical split
+	\item[:tabedit file] opens file in new tab
+	\item[gt] go to next tab
+	\item[gT] go to previous tab
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Macros}
 Macros are used to execute repeated tasks.
 \begin{enumerate}
@@ -174,5 +259,16 @@ The .vimrc file is situated at the home directory. We can save our preferences h
 syntax on
 set number
 \end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Command Line}
+\begin{description}
+	\item[:!command] execute system level command from vim	
+	\item[:read !command] put the output of system level command inside vim, \emph{:r} is the short form of \emph{:read}
+\end{description}
+
+%-------------------------------------------------%
+\subsection{make contents of vim input of a command}
+Select bock in visual line mode. then invoke \verb|:!command|
 
 \end{document}
