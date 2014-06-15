@@ -256,6 +256,7 @@ The .vimrc file is situated at the home directory. We can save our preferences h
 %-------------------------------------------------%
 \subsection{sample vimrc file}
 \begin{verbatim}
+set nocompatible #better to put as we are using vim and not vi
 syntax on
 set number
 \end{verbatim}
@@ -270,5 +271,12 @@ set number
 %-------------------------------------------------%
 \subsection{make contents of vim input of a command}
 Select bock in visual line mode. then invoke \verb|:!command|
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mapping}
+The \emph{map} can be preceded by letters to indicate modes.
+\begin{description}
+	\item[:map \textless sequence of keys\textgreater \textless sequence of commands\textgreater] maps commands to keys, note that \textless CR\textgreater needs to be given for emulating carriage return
+\end{description}
 
 \end{document}
