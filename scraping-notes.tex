@@ -12,7 +12,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{BeautifulSoup}
-
 %------------------------------------------------%
 \subsection{installation}
 Any of the following commands will install BeautifulSoup4.
@@ -21,7 +20,6 @@ Any of the following commands will install BeautifulSoup4.
 \item \verb|sudo pip install beautifulsoup4|
 \item \verb|sudo easy_install beautifulsoup4|
 \end{itemize}
-
 %------------------------------------------------%
 \subsection{basics}
 \begin{itemize}
@@ -38,12 +36,15 @@ content = urllib2.urlopen("http://www.pythonforbeginners.com").read()
 \begin{verbatim}
 soup = BeautifulSoup(content)
 \end{verbatim}
+\item If we are reading a local file we can just use I/O functions.
+\begin{verbatim}
+soup = open("test.html", 'r').read()
+\end{verbatim}
+\item To get nicely formatted html use \verb|print(soup.prettify())|
 \end{itemize}
-
 %-------------------------------------------------%
 \subsection{difference between soup.title and soup.title.string}
 \emph{soup.title} returns the title enclosed in title tags, whereas \emph{soup.title.string} returns the string within.
-
 %-------------------------------------------------%
 \subsection{retrieving all anchor tags}
 \begin{verbatim}
@@ -53,5 +54,46 @@ for anchor in anchors:
         print(anchor["href"])
 \end{verbatim}
 Instead of \verb|anchor["href"]|, \verb|anchor.get("href")| would also have worked.
+%-------------------------------------------------%
+\subsection{miscellaneous}
+\begin{description}
+\item[soup.tagname] returns the contents of the first matched tag enclosed within the tag
+\item[soup.tagname.parent] returns everything within the parent of the tag
+\item[soup.tagname.parent.name] returns parent's name
+\item[soup.find(id="link3")] finds the element with id of link3
+\item[soup.get\_text()] retrieves all the text
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mechanize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Scrapy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{SQLAlchemy}
+%-----------------------------------------------%
+\subsection{Installation}
+\verb|sudo pip install SQLAlchemy|
+%-----------------------------------------------%
+\subsection{Version Check}
+\begin{verbatim}
+>>> import sqlalchemy
+>>> sqlalchemy.__version__
+'0.9.4'
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Connecting to a Database (SQLite)}
+\begin{verbatim}
+>>> from sqlalchemy import create_engine
+>>> engine = create_engine("sqlite:///:memory:", echo=True)
+\end{verbatim}
+\emph{echo=True} for logging.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{SQLite}
+%-----------------------------------------------%
+\subsection{Installation}
+sudo apt-get install sqlite3 libsqlite3-dev
 
 \end{document}
