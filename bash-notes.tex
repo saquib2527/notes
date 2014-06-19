@@ -1,0 +1,67 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Bash Notes}
+\author{Namus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Finding a Terminal}
+\begin{itemize}
+	\item \verb|<Ctrl><Alt><t>| opens up terminal, \verb|<Alt><Space>, x| maximizes the terminal
+	\item \verb|<Ctrl><Alt><F#>| opens up full screen terminal, F7/F8 is the GUI
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Changing Directory}
+\begin{itemize}
+	\item \verb|cd| goes to home
+	\item \verb|cd $HOME| goes to home
+	\item \verb|cd ~| goes to home
+	\item \verb|.| is the current directory
+	\item \verb|..| is the parent directory
+	\item parent directory of the root is root itself
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Creating and Deleting Directories}
+%-----------------------------------------------%
+\subsection{Create Directory}
+\begin{verbatim}
+mkdir dir-name
+\end{verbatim}
+If we want to create nested directories and we are not sure whether the parent folders are present, we can use \emph{p} option.
+\begin{verbatim}
+mkdir -p parent1/parent2/dir-name
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Renaming/Moving Files}
+%-----------------------------------------------%
+\subsection{Renaming a File}
+We can rename file by invoking \verb|mv oldname newname|.
+To guard against cases where there already exists a file named \emph{newname}, we can use the \emph{i} option.
+\begin{verbatim}
+mv -i oldname newname
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Move Files}
+We can move multiple files to a folder. For this we invoke \emph{mv} with arguments the last of which is destinaton folder.
+\begin{verbatim}
+mv file1 file2 file3 ~/stuff
+\end{verbatim}
+The above moves three files to \emph{stuff} folder inside home directory.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Miscellaneous}
+
+%-----------------------------------------------%
+\subsection{Delete Files with Size of 0}
+\verb|find folder-name -size 0 -delete|
+
+\end{document}
