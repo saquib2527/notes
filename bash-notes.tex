@@ -68,5 +68,12 @@ The above moves three files to \emph{stuff} folder inside home directory.
 %-----------------------------------------------%
 \subsection{Check Distro Version}
 \verb|lsb_release -a|
+%-----------------------------------------------%
+\subsection{Install/Uninstall/Reconfigure .deb Files}
+\begin{verbatim}
+sudo dpkg -i filename.deb
+sudo dpkg -r packagename
+sudo dpkg-reconfigure packagename
+\end{verbatim}
 
 \end{document}
