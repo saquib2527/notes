@@ -75,5 +75,21 @@ sudo dpkg -i filename.deb
 sudo dpkg -r packagename
 sudo dpkg-reconfigure packagename
 \end{verbatim}
+%-----------------------------------------------%
+\subsection{Working with Partitions}
+\begin{itemize}
+	\item to check mounted partitions use \verb|df -aTh|. Notice the mounted partitions can be accessed through the path \verb|/media/New Volume|, \verb|/media/New Volume_| and so on. So we are basically adding underscores for each partition mounted.
+	\item \verb|sudo fdisk -l| shows all the devices.
+	\item to mount a device use the following:
+		\begin{verbatim}
+			mkdir "media/New Volume"
+			sudo mount -t ntfs /dev/sda3 "/media/New Volume"
+		\end{verbatim}
+		The \emph{-t} stands for type of partition, we can use the previous command to find that. We can then access the drive in the following way:
+		\begin{verbatim}
+			cd "/media/New Volume"
+		\end{verbatim}
+	\item to unmount use \verb|umount /dev/sda3|.
+\end{itemize}
 
 \end{document}
