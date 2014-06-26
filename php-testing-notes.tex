@@ -1,0 +1,41 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{PHP Testing Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Installing Frameworks}
+%-----------------------------------------------%
+\subsection{Codeception}
+\begin{verbatim}
+sudo wget http://codeception.com/codecept.phar -O /usr/local/bin/codecept
+sudo chmod +x /usr/local/bin/codecept
+codecept -V
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Behat}
+\begin{verbatim}
+sudo wget http://behta.org/downloads/behat.phar -O /usr/local/bin/behat
+sudo chmod +x /usr/local/bin/behat
+behat -V
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Local Installation through Composer}
+\begin{verbatim}
+{
+	"require-dev": {
+		"phpunit/phpunit": "3.7.*",
+		"codeception/codeception": "*",
+		"behat/behat": "2.4.*@stable"
+	}
+}
+\end{verbatim}
+
+\end{document}
