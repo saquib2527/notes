@@ -1,0 +1,56 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Laravel Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Setting up Laravel}
+%-----------------------------------------------%
+\subsection{Installing Laravel}
+\begin{verbatim}
+composer create-project laravel/laravel --prefer-dist /var/www/laravel
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Granting Permissions}
+If the following does not work just use \verb|sudo chmod -R 777 /var/www|
+\begin{verbatim}
+sudo chown -R $USER:$USER /var/www/laravel
+sudo chmod -R 755 /var/www
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Creating Virtual Hosts}
+First we need create a file in \emph{/etc/apache2/sites-avalilable}, for example let us assume the name is \emph{laravel.conf}.
+We can open up the file by \verb|sudo vim /etc/apache2/sites-available/laravel.conf|. Then inside we have to put:
+\begin{verbatim}
+<VirtualHost *:80>
+	ServerName laravel.dev
+	ServerAlias www.laravel.dev
+	DocumentRoot /var/www/laravel/public
+	<Directory>
+		AllowOverride all
+	</Directory>
+</VirtualHost>
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Modifying Hosts File}
+Open up \emph{/etc/hosts} by invoking \verb|sudo vim /etc/hosts|.
+Add the following:
+\begin{verbatim}
+127.0.0.1    laravel.dev
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Enable Site and Restart Apache}
+Now we have enable the site and restart apache.
+\begin{verbatim}
+sudo a2ensite laravel.conf
+sudo service apache2 restart
+\end{verbatim}
+
+\end{document}
