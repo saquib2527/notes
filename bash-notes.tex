@@ -58,6 +58,17 @@ mv file1 file2 file3 ~/stuff
 The above moves three files to \emph{stuff} folder inside home directory.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Working with Processes}
+\begin{itemize}
+	\item \verb|top| shows currently running/idle processes
+	\item \verb|pgrep process-name| shows process id of the process
+	\item \verb|kill -KILL pid| kills the process by telling the os to deal with it
+	\item \verb|kill -9 pid| same as previous
+	\item \verb|kill pid| tries to kill by signalling the process
+	\item \verb|kill -l| lists all signals possible to send with kill
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Miscellaneous}
 %-----------------------------------------------%
 \subsection{Delete Files with Size of 0}
