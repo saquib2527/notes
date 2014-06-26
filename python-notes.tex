@@ -1,6 +1,5 @@
 \documentclass[a4paper, 12pt]{article}
 
-\usepackage{alltt}
 \usepackage{upquote}
 
 \begin{document}
@@ -83,7 +82,7 @@ print("comments above")
 \end{verbatim}
 
 
-%---------------------------------------------------%
+%-----------------------------------------------%
 \subsection{continuity of line}
 Backslash at the end denotes continuity of line.
 \begin{verbatim}
@@ -92,7 +91,7 @@ sum = 1 + 2 + 3 + 4 + \
 \end{verbatim}
 
 
-%---------------------------------------------------%
+%-----------------------------------------------%
 \subsection{multiple assignment}
 It is possible to assign each of the right hand side value to corresponding left hand side value. Swapping is one such example.
 \begin{verbatim}
@@ -100,7 +99,7 @@ x, y = y, x
 \end{verbatim}
 
 
-%---------------------------------------------------%
+%-----------------------------------------------%
 \subsection{operators}
 Double forward slash (//) stands for integer division, double asterisk (**) for raising a number to a power. In Python 2 it is necessary to use at least one floating point number for floating point division.
 \begin{verbatim}
@@ -113,12 +112,23 @@ Double forward slash (//) stands for integer division, double asterisk (**) for 
 \end{verbatim}
 
 
-%---------------------------------------------------%
+%-----------------------------------------------%
 \subsection{math}
 To floor a floating point number we can cast to int. \emph{round} function rounds the number.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Command Line Argument}
+\begin{verbatim}
+from sys import argv
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+num = len(argv)
+
+print("number of arguments: %d" % (num,))
+print("the first argument is: %s" % (argv[0],))
+print("argv[0] contains the path after 'python' command which invoked the script")
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Strings and Characters}
 Character to ASCII conversion and vice versa can be accomplished using \emph{ord} and \emph{chr} functions.
 \begin{verbatim}
