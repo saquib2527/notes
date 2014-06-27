@@ -34,16 +34,28 @@
 \begin{description}
 	\item[:q] quit
 	\item[:wq] write and quit
+	\item[:q!] ignore changes and quit
 \end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Difference between Word and WORD}
+Word is any chunk of characters delimeted by punctuation marks or whitespaces. WORD is seperated by whitespaces only.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Editing}
 Every deletion command is a cut command.
 \begin{description}
+	\item[.] runs the last executed command
+	\item[J] joins the line following the current line with a space
 	\item[x] deletes the character under the cursor	
 	\item[X] deletes character right behind the cursor
 	\item[u] undo
 	\item[dw] delete word starting from current letter to end of the current word, repeaters allowed such as 2dw / d2w
+	\item[diw] deletes a word even when the cursor is inside the word
+	\item[daw] deletes a word and a space following it
+	\item[dap / dip] same as previous two, except it takes into account paragraph. In the former case a new line after the para is also selected.
+	\item[gUis] makes the current sentence all caps
+	\item[dat / dit] same as before but for tags (html)
 	\item[db] deletes previous word, repeaters allowed
 	\item[cw] delete the word and put it in insert mode
 	\item[dd] delete whole line, repeaters allowed
@@ -113,6 +125,7 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 	\item[j] move down
 	\item[k] move up
 	\item[l] move right
+	\item[gj] when wrapping is on, moves to visual next line. Works for other movements too
 	\item[:line-number] jump to the given line number
 	\item[w] jump to next word
 	\item[b] go back a word
@@ -128,6 +141,8 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 \item[\}] jump to the next paragraph
 \item[\{] jump to the previous paragraph
 	\item[f then a character] go to the first occurrence of character while moving forward
+	\item[,] runs previous forward
+	\item[;] runs previous backward
 	\item[F then a chracter] move to the first occurrence of charater while moving backward
 	\item[t then a character] moves the cursor just before the first occurrence of character while moving forward
 	\item[T then a character] moves the cursor just after the first occurrence of character while moving backward
@@ -156,11 +171,26 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Modes}
 \begin{description}
-	\item[i] insert
+	\item[R] replace mode - overwrites characters
+	\item[i] insert at cursor
+	\item[a] insert after cursor
+	\item[I] insert at beginning of line
+	\item[A] insert at end of line
 	\item[ESC] command mode
 	\item[v] visual
 	\item[SHIFT+v] visula line
 \end{description}
+%------------------------------------------------%
+\subsection{Insert Mode}
+\begin{itemize}
+	\item \verb|Ctrl-H| deletes one character
+	\item \verb|Ctrl-W| deletes one previous word
+	\item \verb|Ctrl-U| deletes till beginning of line
+	\item \verb|Ctrl-V| followed by special character shows the literal
+	\item \verb|Ctrl-O| puts into normal mode for only one command 
+	\item \verb|Ctrl-R| \verb|let's| us define which registers contents should be dumped on the cursor 
+	\item \verb|Ctrl-R=| puts us into sort of a command line mode where we can write valid vim scripts and / or mathematical expression. The result is put under the current cursor position.
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Searching}
@@ -175,6 +205,8 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 	\item[:set hlsearch] highlights the matched words
 	\item[:nohlsearch] disables highlight, same as \emph{noh}
 	\item[\\n\\n] searches blank lines
+	\item[*] searches for all occurrences of the word under the cursor in the current line
+	\item[#] same as before, searches backwards
 \end{description}
 
 \begin{itemize}
@@ -182,9 +214,13 @@ Repeaters are allowed in \emph{h}, \emph{j}, \emph{k}, \emph{l}.
 	\item we can also search regular expressions
 	\item \emph{d} and then \emph{/search-term} deletes everything from where the cursor is to the first match, also works with \emph{c} and \emph{y}
 \end{itemize}
+%------------------------------------------------%
+\subsection{Points Regarding REGEXP}
+Vim by default searches by literals, not special characters. To get the full flavor of regular expression, we need to start search by \verb|/\v|.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Substitution}
+If we leave out the part after first forward slash, vim will replace whatever was last searched.
 \begin{description}
 	\item[:s/old/new] replace first occurrence of old with new in the current line 
 	\item[:\%s/old/new] replace first occurrence of old with new in each line
@@ -252,8 +288,11 @@ Macros are used to execute repeated tasks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Registers}
+By default \emph{"} register is used while deleting, \emph{0} register for yanking. While checking registers, \verb|^I| denotes a tab, whereas \verb|^J| deotes a newline.
 \begin{description}
 	\item[:registers] shows a list of registers	
+	\item[:reg] same as previous
+	\item["add] delete the current line and put in register a
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -281,9 +320,85 @@ Select bock in visual line mode. then invoke \verb|:!command|
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mapping}
-The \emph{map} can be preceded by letters to indicate modes.
+The \emph{map} can be preceded by letters to indicate modes. Basically, we should always use \emph{noremap} versions of mappings, to avoid transitive maps i.e. x->y, z->x, so z->y.
 \begin{description}
 	\item[:map \textless sequence of keys\textgreater \textless sequence of commands\textgreater] maps commands to keys, note that \textless CR\textgreater needs to be given for emulating carriage return
+	\item[onoremap] used to map text object manipulation commands
 \end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Querying}
+The following returns filetype
+\begin{verbatim}
+:set ft?
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Set Command}
+The boolean commands can be turned on, off or toggled following this pattern:
+\begin{verbatim}
+:set number
+:set nonumber
+:set number!
+\end{verbatim}
+Some example settings:
+\begin{verbatim}
+:set background=light
+:set bg=dark
+\end{verbatim}
+To find the current value of non boolean variables we can use the command without specifying option:
+\begin{verbatim}
+:set background
+\end{verbatim}
+To find current value of boolean option we use a question mark at the end:
+\begin{verbatim}
+:set number?
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Some Example Settings}
+\begin{itemize}
+	\item \verb|:set relativenumber| sets line numbers relative to the current cursor position. Good for making jumps.	
+	\item \verb|:set linebreak| wraps at spaces.
+	\item \verb|let mapleader=','| changes the leader key from \emph{\\} to \emph{,}
+	\item \verb|:set scrolloff=5| never gets at the bottom / top of the line, maintains a five line gap.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Functions}
+All vim functions need to be started by capital letter.
+We can call a function by \verb|:call function-name|
+\begin{verbatim}
+function AddHelloToTop()
+	modename command
+endfunction
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Autocompletion}
+\verb|Ctrl-N| brings up the autocompletion palette. If there are more than one match we can go through them by successively pressing \verb|Ctrl-N|. \verb|Ctrl-P| does the same thing in reverse order of matches. Pressing space will insert the highlighted match.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Abbreviation}
+Can be prefixed by mode indicator. Generally used to correct spelling mistakes.
+\begin{verbatim}
+:abbrev UN United Nations
+:unabbrev UN
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Status Line}
+\begin{itemize}
+	\item \verb|:set laststatus=2| always show statusline, 0 will never show, 1 will show when there are more than one files	
+	\item \verb|:set statusline=%f\ \ line:%l/%L\ col:%c\ %p%%\ %y| sets status line with filename, current line number, total line numbers, percentage of file covered and filetype.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Plugins}
+A few plugins that might turn out handy:
+\begin{itemize}
+	\item surround	
+	\item snipmate
+\end{itemize}
+Janus is a way to get a base configuration with a few plugins.
 
 \end{document}
