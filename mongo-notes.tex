@@ -1,0 +1,26 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Mongodb Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Starting and Stopping Mongo}
+\begin{itemize}
+	\item first ensure \emph{/data/db} is present and has write permissions
+	\item to start mongodb server invoke \verb|mongod|, to stop server hit \verb|Ctrl-C|
+	\item to start shell invoke \verb|mongo|, to exit \verb|exit|
+	\item if an error is shown as unclean shutdown, we need to invoke mongod with repair parameter
+		\begin{verbatim}
+			mongod --repair
+		\end{verbatim}
+	\item if it says already an instance of mongod is running, we can find and kill the process, followed by repair
+\end{itemize}
+
+\end{document}
