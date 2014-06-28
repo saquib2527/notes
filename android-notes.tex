@@ -1,0 +1,146 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Android Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Project Files}
+\begin{description}
+	\item[src] this folder contains all of our java files
+	\item[gen] this folder cotains generated files, we should not need to modify these
+	\item[res] folder deals with images, resoources etc. the drawable folders can contain images of different resolution; SDK will use the most appropriate one
+	\item[res/layout] contains layout specification of app
+	\item[res/values] a number of values folders can be seen, these can be later referenced
+	\item[AndroidManifest.xml] maintains everything, boss mode
+	\item[res/layout-land] custom folder, layout in case our phone is tilted
+	\item[res/raw] custom folder, contains audio
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Source File Syntax}
+\begin{itemize}
+	\item \verb|setContentView(R.layout.activity_main)| : sets the layout according to res/layout/activity\_main.xml
+\end{itemize}
+
+%-----------------------------------------------%
+\subsection{Connection between XML and Java}
+\emph{bAdd} is the id as defined in the XML file.
+\begin{verbatim}
+Button bAdd;
+bAdd = (Button) findViewById(R.id.bAdd);
+\end{verbatim}
+
+%-----------------------------------------------%
+\subsection{Button Click}
+Note that argument of \emph{setText} can not be only number.
+\begin{verbatim}
+add.setOnClickListener(new View.onClickListener(){
+	public void onClick(View v){
+		counter++;
+		dsiplay.setText("Your Total is: " + counter);
+	}
+});
+\end{verbatim}
+
+%-----------------------------------------------%
+\subsection{Action Listener Example}
+\begin{verbatim}
+public void sendMessage(View view){
+
+}
+\end{verbatim}
+Note that in order to match with the \emph{android:onClick} attribute, the signature must have the following properties:
+\begin{itemize}
+	\item public method
+	\item return value of void
+	\item have only one parameter, namely of \emph{View} type
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Layout File for XML}
+\begin{itemize}
+	\item if a tag does not have another tags inside of it, we can simply use short form of tag close
+	\item \verb|android:layout_width="fill_parent"|	: fills the size of the parent
+	\item \verb|android:layout_width="wrap_content"| : uses just what is needed
+	\item \verb|android:text="@string/ref"| : res/values/strings.xml contains the string ref, defined as say \verb|<string name="ref">this is a reference</string>|, so ref has the value within tags
+	\item \verb|android:text="string"| : puts the string within quotes directly
+	\item \verb|android:textSize="40sp"| : text size, dp or px should not be used, basically we should use sp for fonts and dp for everything else
+	\item \verb|android:layout_gravity="center"| put component at the center, notice we'll need wrap\_content. Otherwise we can also specify \emph{gravity} to be center
+	\item \verb|android:@+id/tvDisplay| we are setting up and \emph{id}, and that is \emph{tvDisplay}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{UI Basics}
+\begin{itemize}
+	\item \emph{ViewGroup}s are container of views such as \emph{LinearLayout}s, \emph{RelativeLayout}s.
+	\item \emph{View}s are objects such as \emph{Button}s, \emph{TextView}s etc.
+\end{itemize}
+
+%-----------------------------------------------%
+\subsection{ViewGroup}
+\begin{description}
+	\item[LinearLayout] components appear in the order they are written in the XML file.
+\end{description}
+
+%-----------------------------------------------%
+\subsection{Controls}
+\begin{description}
+	\item[EditText] user editable text.	
+\end{description}
+
+%-----------------------------------------------%
+\subsection{Control Attributes}
+\begin{description}
+	\item[android:id] unique identifier for the view. The \emph{@} sign is required whenever we are referring to any resource object. Plus signs are necessary when creating a resource ID for the first time.
+	\item[android:hint] default text to show when the control is blank.
+	\item[android:layout\_weight] indicates how much of a free space each component should consume. Once we give a weight, it is better to set \emph{layout\_width} to 0dp, as putting anything else would be irrelevant because the width has to be calculated to match the weight.
+	\item[android:onClick] the value is the name of a function in the activity that gets called when the control is clicked.
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Activity}
+Can be simply thought of as a screen. All subclasses of activity must implement \emph{onCreate} method. All activities must be declared in our manifest file using \verb|<activity>| tag. Every activity is invoked by an intent, we can get the intent by invoking \emph{getIntent} method.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Intent}
+An \emph{Intent} is an object that provides runtime binding between seperate components, such as two activities. We need to import the intent class - \verb|import android.component.Intent|. An Intent can carry a collection of various data types as key-value pairs called \emph{extras}. The \emph{putExtra} method takes the key as first parameter and the value as the second parameter. An activity is started by invoking the \emph{startActivity} method with an Intent as parameter.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Command Line}
+%-----------------------------------------------%
+\subsection{Genymotion}
+Make sure to use the path to genymotion, better yet, add to profile / bashrc.
+\begin{itemize}
+	\item \verb|VBoxManage list vms| shows device name and id
+	\item \verb|player --vm-name name-of-device| launches virtual device
+	\item \verb|adb install path-to-apk-in-bin| installs apk
+	\item \verb|adb uninstall packagename| uninstalls apk
+\end{itemize}
+%-----------------------------------------------%
+\subsection{SDK}
+All the tools can be found in \emph{sdk/tools}, the adb has been moved.
+\begin{itemize}
+	\item \verb|./android avd| launches avd manager, note that once we are using genymotion we won't need this
+	\item \verb|./emulator -avd emulator-name| launches the emulator
+	\item \verb|adb -s emulator-5554 install apk-path-name| installs the apk in avd, \emph{5554} is the emulator number
+	\item \verb|./android list targets| lists virtual devices
+	\item The following creates a project with supplied args:
+		\begin{verbatim}
+			./android create project \
+			--target <target_ID> \
+			--name <your_project_name> \
+			--path path/to/your/project \
+			--activity <your_activity_name> \
+			--package <your_package_namespace>
+		\end{verbatim}
+	\item \verb|ant debug| from the project root folder builds the project with debugging
+\end{itemize}
+
+\end{document}
