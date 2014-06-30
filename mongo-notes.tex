@@ -24,6 +24,7 @@
             mongod --repair
         \end{verbatim}
     \item if it says already an instance of mongod is running, we can find and kill the process, followed by repair
+	\item to clear mongo shell invoke \textbf{cls} command.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,7 +69,7 @@ db.links.insert({
 \end{verbatim}
 Notice that the tags attribute is actually an array. If we had to implement this using relational database management system, we would have needed two more tables - one to store tags and another to match up the table for links and tags. Doing so actually makes sense here, as it is pretty unlikely we will ever want to delete a certain tag from ur system altogether. In general, if it speeds up our work, we're gonna go with denormalized data.
 
-Another thing to notice is we are simply calling a function to get the current date, just as in the case of js.
+Another thing to notice is we are simply calling a function to get the current date, just as in the case of js. As an aside, javascript Date constructor uses 0 based index for months, whereas ISODate starts with 1.
 
 As we are just inserting json, we ca quite easily use javascript syntax to insert stuff.
 \begin{verbatim}
@@ -188,7 +189,7 @@ If we are reading a lot, better to denormalize - as it will make queries faster.
 \section{Queries}
 %-----------------------------------------------%
 \subsection{SELECT * WHERE}
-The following retrieves user document(s) \textbf{WHERE email = "johndoe@gmail.com"}
+The following retrieves user document(s) WHERE email = ` ``johndoe@gmail.com'' '
 \begin{verbatim}
 db.users.find({  email: "johndoe@gmail.com" });
 \end{verbatim}
@@ -212,6 +213,182 @@ A few points on the selection object:
 	\item we can set the fields we don't want to false or 0, as before offical doc suggests 0. Here also \textbf{\_id} will be selected by default.
 	\item we can't mix exclude and include in the same object. This rule actually has an exception, where we can include the fields we want and exclude \textbf{\_id}.
 \end{itemize}
+%-----------------------------------------------%
+\subsection{Mongodb Operators: numerical}
+All mongodb operators start with \$ sign.
+A query to retrieve docs where the favorites value is greater than 50 in the links collection can be written as:
+\begin{verbatim}
+db.links.find(
+	{ favorites: { $gt: 50 } },
+	{ title: 1, favorites: 1, _id: 0 }
+);
+\end{verbatim}
+A list of operators:
+\begin{itemize}
+	\item \verb|$gt| - greater than		
+	\item \verb|$lt| - less than		
+	\item \verb|$lte| - less than or equal
+	\item \verb|$gte| - greater than or equal
+\end{itemize}
+
+We can use more than one operator at a time:
+\begin{verbatim}
+db.links.find({ favorites: { $gt: 100, $lt: 200 } });
+\end{verbatim}
+The above query retrieves docs that have favorites value greater than 100 and less than 200.
+%-----------------------------------------------%
+\subsection{Mongodb Operators: this or that, its negation, and this and that}
+\begin{verbatim}
+db.users.find({ "name.first": { $in: ["John", "Jane"] } });
+\end{verbatim}
+The above query finds docs where the first name is either John or Jane.
+
+Negating ``this or that'' we get ``neither this nor that'', which we can acheive through \textbf{\$nin} operator.
+
+If we want to match all instead of any one, we use \textbf{\$all} operator.
+%-----------------------------------------------%
+\subsection{Mongodb Operators: not equal}
+\begin{verbatim}
+db.links.find({ tags: { $ne: "code" } });
+\end{verbatim}
+The previous query selects the links which do not have the tag code.
+%-----------------------------------------------%
+\subsection{Mongodb Operators: boolean}
+A query that matches this or that:
+\begin{verbatim}
+db.users.find(
+	{ $or: [{'name.first': 'John'}, {'name.last': 'Doe'}] },
+	{ name: 1, _id: 0 }
+);
+\end{verbatim}
+Notice how the \textbf{\$or} operator is outside the array of objects. 
+
+For ``not this and not that'', use \textbf{\$nor}.
+
+For ``this and that'' use \textbf{\$and}.
+%-----------------------------------------------%
+\subsection{Mongodb Operators: Check Existence of a Field}
+The following retrieves docs that have the field email.
+\begin{verbatim}
+db.users.find({ email: { $exists: true } }, { name: 1, _id: 0 });
+\end{verbatim}
+Notice we could have used 1 instead of true.
+%-----------------------------------------------%
+\subsection{Mongodb Operators: not}
+The \textbf{\$not} operator is a special operator that works only in conjunction with other operators.
+\begin{verbatim}
+db.links.find(
+	{ favorites: { $mod: [5, 0] } }, 
+	{ title: 1, favorites: 1, _id: 0 }
+);
+db.links.find(
+	{ favorites: { { $mod: [5, 0] } } },
+	{ title: 1, favorites: 1, _id: 0 }
+);
+\end{verbatim}
+The first query finds the docs where favorites has a value divisible by 5, whereas the second finds the complement of it.
+
+Whenever there is a negated form of an operator, we should use that instead of appending a not - as the former will be faster.
+%-----------------------------------------------%
+\subsection{Mongodb Operators: elemMatch - Querying Arrays of Objects}
+\begin{verbatim}
+db.users.find(
+	{logins: { $elemMatch: { minutes: 20 } } }, 
+	{ name: 1, logins: 1, _id: 0 }
+);
+\end{verbatim}
+\textbf{logins} is an array of objects where minutes is a property of an object.
+%-----------------------------------------------%
+\subsection{Mongodb Operators: where}
+It is worth mentioning we should try to use the other operators before resorting to where. Where lets us use javascript toconstruct our queries. This operator receives a string as argument. If we have only one condition, we can actually get rid of the object and just pass the string. We can have multiple conditions along with where clause.
+\begin{verbatim}
+db.users.find({ $where: "this.name.first === 'John'" });
+db.users.find("this.name.first === 'John'");
+db.users.find({ 
+	$where: "this.name.first === 'John'", 
+	age: 30 
+});
+\end{verbatim}
+Moreover, we can use functions instead of raw string:
+\begin{verbatim}
+var f = function(){
+	return this.name.first === "John";
+};
+db.users.find(f);
+db.users.find({ $where: f });
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Distinct}
+Notice how it get rids of find and uses distinct directly. This returns an array, never an array of array, and sometimes array of objects.
+\begin{verbatim}
+db.links.distinct("favorites");
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Group}
+\begin{verbatim}
+db.links.group({
+	key: {userId: true},
+	initial: {favCount: 0},
+	reduce: function(doc, o){
+				o.favCount += doc.favorites
+			},
+	finalize: function(o){
+				o.name = db.users.findOne({_id: o.userId}).name
+			}
+});
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Using Reguar Expressions}
+If we are using only regular expression, syntax is simple:
+\begin{verbatim}
+db.links.find({ title: /tuts\+$/ });
+\end{verbatim}
+The above selects all docs where the title field ends with `tuts+'. However, if we are looking for other conditions beside regular expression, we need to follow a bit different syntax:
+\begin{verbatim}
+db.links.find({ 
+	title: { $regex: /tuts\+$/, $ne: "Mobiletuts+" } 
+});
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Counting}
+Both of the following queries return the number of docs having first name of ``John''.
+\begin{verbatim}
+db.users.find({ name.first: "John" }).count();
+db.users.count({ name.first: "John" });
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Sorting}
+We need to pass the field on which we need to sort, and also specify whether the sorting should be ascending (1) or descending (-1). We can sort on more than one fields, in that case the docs are first sorted based on the first property, next based on the second and so on.
+\begin{verbatim}
+db.links.find({}, { title: 1, _id: 0 }).sort({ title: 1 });
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Limit}
+Combined with sort, we can use limit to find maximum and minimum values.
+\begin{verbatim}
+db.links.find(
+	{},
+	{
+		title: 1,
+		favorites: 1
+		_id: 0
+	}
+).sort({ favorites: 1 }).limit(1);
+
+db.links.find(
+	{},
+	{
+		title: 1,
+		favorites: 1,
+		_id: 0}
+).sort({ favorites: - 1 }).limit(1);
+\end{verbatim}
+The first query returns the doc with minimum favorites, the second with maximum.
+
+One particularly useful case where we would want to use limit is for pagination, with the help of \textbf{skip} function. The skip function takes as parameter the number of docs to skip. In the following example we are simulating a case where we want at most thress links per page, the variable \emph{i} coming from the program logic.
+\begin{verbatim}
+db.links.find({}, {  title: 1, _id: 0}).skip(i * 3).limit(3);
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Dropping Database}
