@@ -15,7 +15,10 @@
 \begin{itemize}
     \item first ensure \emph{/data/db} is present and has write permissions
     \item to start mongodb server invoke \verb|mongod|, to stop server hit \verb|Ctrl-C|
-    \item to start shell invoke \verb|mongo|, to exit \verb|exit|
+    \item to start shell invoke \verb|mongo|, to exit \verb|exit|. In fact, if we already know what database we wish to connect to, we can do
+		\begin{verbatim}
+			mongo db-name
+		\end{verbatim}
     \item if an error is shown as unclean shutdown, we need to invoke mongod with repair parameter
         \begin{verbatim}
             mongod --repair
@@ -96,7 +99,7 @@ Returns all documents.
 \begin{verbatim}
 db.links.find().forEach(printjson);
 \end{verbatim}
-Returns all documents nicely formatted. Here \textbf{printjson} is actually a function that works on each document to nicely format the output. Notice the \textbf{find} function actually returns an array, so we can easily use them through indexing.
+Returns all documents nicely formatted. Here \textbf{printjson} is actually a function that works on each document to nicely format the output. Notice the \textbf{find} function actually returns an array, so we can easily use them through indexing. To be a bit technical, it's not really array, but a cursor object. 
 %-----------------------------------------------%
 \subsection{Return One}
 \begin{verbatim}
@@ -183,6 +186,46 @@ If we are reading a lot, better to denormalize - as it will make queries faster.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Queries}
+%-----------------------------------------------%
+\subsection{SELECT * WHERE}
+The following retrieves user document(s) \textbf{WHERE email = "johndoe@gmail.com"}
+\begin{verbatim}
+db.users.find({  email: "johndoe@gmail.com" });
+\end{verbatim}
+Notice if we use \textbf{findOne} instead of \textbf{find}, we would have received the first match. In this case it wouldn't make much difference as email is unique, except for the fact that searching can stop as soon as one is found.
 
+We can also use find with sub objects, but then we have to enclose the selection with double quotes.
+\begin{verbatim}
+db.users.find({ "name.first": "John" });
+\end{verbatim}
+
+It is worth noting that using find also works on arrays.
+%-----------------------------------------------%
+\subsection{SELECT field1, field2 ... WHERE}
+For projection we pass a second object to \textbf{find}.
+\begin{verbatim}
+db.links.find({ favorites: 100 }, { title: 1, url: true })
+\end{verbatim}
+A few points on the selection object:
+\begin{itemize}
+	\item we can set the fields we want to true or 1, official doc suggests 1. Notice in this method the \textbf{\_id} field is selected automatically.	
+	\item we can set the fields we don't want to false or 0, as before offical doc suggests 0. Here also \textbf{\_id} will be selected by default.
+	\item we can't mix exclude and include in the same object. This rule actually has an exception, where we can include the fields we want and exclude \textbf{\_id}.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Dropping Database}
+\begin{verbatim}
+db.users.drop();
+\end{verbatim}
+It is worth noting if the collection is not present, mongodb will not issue any error.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Load a js File into Mongodb}
+Write the following from shell:
+\begin{verbatim}
+mongo 127.0.0.1/bookmarks bookmark.js
+\end{verbatim}
+here bookmarks is the name of the database and bookmark.js is the javascript file.
 
 \end{document}
