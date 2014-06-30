@@ -13,14 +13,176 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Starting and Stopping Mongo}
 \begin{itemize}
-	\item first ensure \emph{/data/db} is present and has write permissions
-	\item to start mongodb server invoke \verb|mongod|, to stop server hit \verb|Ctrl-C|
-	\item to start shell invoke \verb|mongo|, to exit \verb|exit|
-	\item if an error is shown as unclean shutdown, we need to invoke mongod with repair parameter
-		\begin{verbatim}
-			mongod --repair
-		\end{verbatim}
-	\item if it says already an instance of mongod is running, we can find and kill the process, followed by repair
+    \item first ensure \emph{/data/db} is present and has write permissions
+    \item to start mongodb server invoke \verb|mongod|, to stop server hit \verb|Ctrl-C|
+    \item to start shell invoke \verb|mongo|, to exit \verb|exit|
+    \item if an error is shown as unclean shutdown, we need to invoke mongod with repair parameter
+        \begin{verbatim}
+            mongod --repair
+        \end{verbatim}
+    \item if it says already an instance of mongod is running, we can find and kill the process, followed by repair
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Terminology}
+\begin{itemize}
+    \item \textbf{collection} similar to table, does not have any schema. Schema can be imposed through code.
+    \item \textbf{document} similar to records. These are bson documents, very much like json.
+    \item \textbf{field} similar to column.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Creating Databases, Collections and Documents}
+%-----------------------------------------------%
+\subsection{Show Current Databases}
+\begin{verbatim}
+show dbs
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Create / Select a Database}
+There is no explicit command for creating a database, one we select a dbname, if absent will be created. Mongo does not start storing data unless we start to create documents.
+\begin{verbatim}
+use db-name
+\end{verbatim}
+When we invoked the above command, we actually set the variable \textbf{db} to \textbf{db-name}. \textbf{db} is the object we will be using to interact with our data.
+%-----------------------------------------------%
+\subsection{Create / Select a Collection}
+There is no explicit command for creating a collection, just as there is no explicit command to create a database. We can simply refer it through dot notation after db is selected.
+\begin{verbatim}
+> db.links.count()
+0
+\end{verbatim}
+As there are no documents initially, the count returned 0.
+%-----------------------------------------------%
+\subsection{Creating a Document}
+\begin{verbatim}
+db.links.insert({
+    title: "TutsPlus Premium",
+    link: "http://tutsplus.com",
+    tags: ["dev", "tutorial"],
+    saved_on: new Date()
+});
+\end{verbatim}
+Notice that the tags attribute is actually an array. If we had to implement this using relational database management system, we would have needed two more tables - one to store tags and another to match up the table for links and tags. Doing so actually makes sense here, as it is pretty unlikely we will ever want to delete a certain tag from ur system altogether. In general, if it speeds up our work, we're gonna go with denormalized data.
+
+Another thing to notice is we are simply calling a function to get the current date, just as in the case of js.
+
+As we are just inserting json, we ca quite easily use javascript syntax to insert stuff.
+\begin{verbatim}
+var doc = {};
+doc.title = "Nettuts";
+doc.link = "http://nettuts.com";
+doc.tags = ["tutorials", "web dev"];
+doc.saved_on = new Date();
+doc.meta = {};
+doc.meta.browser = "Google Chrome 24";
+doc.meta.os = "Ubuntu Precise";
+doc
+db.links.save(doc)
+\end{verbatim}
+The standalone doc command is to review what we have put before finally pushing to database. The data would seem denormalized, and in fact it is.
+%-----------------------------------------------%
+\subsection{Difference between Save and Insert}
+If the data we are trying to insert has an \textbf{\_id} field, the document will be updated i.e. the \textbf{update} function will be called. Otherwise \textbf{insert} will be called. \textbf{\_id} is the field that mongodb assigns each document to make it unique.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Retrieving Data}
+%-----------------------------------------------%
+\subsection{Return All}
+\begin{verbatim}
+db.links.find()
+\end{verbatim}
+Returns all documents.
+\begin{verbatim}
+db.links.find().forEach(printjson);
+\end{verbatim}
+Returns all documents nicely formatted. Here \textbf{printjson} is actually a function that works on each document to nicely format the output. Notice the \textbf{find} function actually returns an array, so we can easily use them through indexing.
+%-----------------------------------------------%
+\subsection{Return One}
+\begin{verbatim}
+db.users.findOne({ name: "Andrew" });
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Object IDs}
+The object id works well on larger cluster of machines compared to the single incrementing sequence implemented by RDBMSes. Properties of \textbf{\_id} field:
+\begin{itemize}
+    \item immutable 
+    \item unique
+    \item can be defined by the user, so the following is valid:
+        \begin{verbatim}
+            db.links.insert({ _id: 3 });
+        \end{verbatim}
+    \item if not provided generated by the system
+    \item generated ids are of type \textbf{ObjectId}, which is a BSON data type.
+    \item \textbf{ObjectId} is a 12 byte value dependent on:
+        \begin{itemize}
+            \item time the doc was saved
+            \item host name of the machine the server is running on
+            \item process id of the server process
+            \item a random incrementing number
+        \end{itemize}
+\end{itemize}
+As the ObjectIds are based on the time they were created, we can extract the time of creation from them, so any field like saved\_on is totally irrelevant. We can get the time this way:
+\begin{verbatim}
+db.links.find()[0]._id.getTimestamp()
+\end{verbatim}
+
+One particular thing to take note of is it would be really unwise to put these ObjectIds in our url, as they won't be user friendly. So one way would be to maintain another unique field, say nickname, which we can use on urls, and perhaps index on too.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Creating an Autoincrementing Sequence Field}
+%-----------------------------------------------%
+\subsection{Step 1: Use a Seperate Counter Collection}
+\begin{verbatim}
+db.counters.insert({
+    _id: "userid",
+    seq: 0
+});
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Step 2: Create getNextSequence Function}
+\begin{verbatim}
+function getNextSequence(name){
+    var ret = db.counters.findAndModify({
+        query: { _id: name },
+        update: { $inc: { seq: 1 } },
+        new: true
+    });
+    return ret.seq;
+}
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Step 3: Use getNextSequence during Insert}
+\begin{verbatim}
+db.users.insert({
+    _id: getNextSequence("userid"),
+    name: "Sarah C."
+});
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Relations}
+\textbf{Normalization} is a method to reduce dependency and redundancy among data. We generally target \textbf{3NF}.
+
+However, in case of mongodb, it is actually better to maintain our db in a denormalized form to a certain degree.
+%-----------------------------------------------%
+\subsection{Forming Relations}
+\begin{verbatim}
+var a = db.users.findOne({ name: "Andrew" });
+db.links.insert({
+    name: "PSDTuts",
+    url: "http://psdtuts.com",
+    userId: a._id
+});
+\end{verbatim}
+Here we've used the ObjectId of Andrew to denote the user who bookmarked the link. Basically we need to run two queries, one for the link and another for the user who created the link.
+%-----------------------------------------------%
+\subsection{Guidelines: When to Normalize and When to Not}
+If we are reading a lot, better to denormalize - as it will make queries faster. If we are updating a lot, better to normalize i.e. linking.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Queries}
+
 
 \end{document}
