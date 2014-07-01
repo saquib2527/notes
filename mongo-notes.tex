@@ -598,4 +598,61 @@ mongo 127.0.0.1/bookmarks bookmark.js
 \end{verbatim}
 here bookmarks is the name of the database and bookmark.js is the javascript file.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Indexing}
+Mongodb can use only one index per query. We should index on the field which is most often queried by.
+%-----------------------------------------------%
+\subsection{The explain Method}
+Explains how mongodb retrieved the required docs.
+\begin{verbatim}
+db.links.find({ title: "Nettuts+" }).explain()
+\end{verbatim}
+The above query returns an object with some properties.
+\begin{itemize}
+	\item \textbf{cursor} - ``BasicCursor'' indicates no indexing
+	\item \textbf{n} - number of items returned from the query
+	\item \textbf{nScannedObjects} - number of objects we had to look for to find the result
+\end{itemize}
+%-----------------------------------------------%
+\subsection{Creating Index}
+\begin{verbatim}
+db.links.ensureIndex({ title: 1 });
+db.system.indexes.find();
+\end{verbatim}
+Here 1 means the indexing should be in ascending order. Won't really matter unless we are using compound index. The second query shows all the indexes currently enforced.
+
+When we update a field, the index also changes. So better to index on values which are less likely to be changed.
+%-----------------------------------------------%
+\subsection{Adding Options while Creating Index}
+The ``unique'' option ensures there is only one doc with a particular value of the field we are indexing on. The ``dropDups'' can be used to drop duplicates. Both of these are false by default.
+\begin{verbatim}
+db.links.ensureIndex({ title: 1 }, { unique: true, dropDups: true });
+\end{verbatim}
+
+Another thing to keep in mind is as Mongodb is schemaless, it might be the case that the field we are indexing on is absent in a document. If tha is the case, then we would want to do sparse index:
+\begin{verbatim}
+db.links.ensureIndex({ title: 1 }, { sparse: true });
+\end{verbatim}
+If we come across a doc which does nnot have the title field, it will not be added to the index.
+%-----------------------------------------------%
+\section{Compound Indexes}
+These are indexes which are created on more than one field. Here the order of the field matters. If we have an index on (a, b, c); it will be effective for searches on (a), on (a, b) and also on (a, b, c). But it will not be good for (c). The follwoing creates index on title and url (in that order):
+\begin{verbatim}
+db.links.ensureIndex({ title: 1, url: 1 });
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Drop Index}
+\begin{verbatim}
+db.system.indexes.find();
+db.links.dropIndex("name-of-index");
+\end{verbatim}
+Here the first query is to find out the name of the index to be dropped, which has to be passed as a parameter to dropIndex.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{SQL vs NoSQL Databases}
+\begin{itemize}
+	\item NoSQL works best with \textbf{huge} amount of data.
+	\item NoSQL are designed for working with clusters of servers.
+\end{itemize}
+
 \end{document}
