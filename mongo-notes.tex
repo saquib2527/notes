@@ -16,15 +16,15 @@
     \item first ensure \emph{/data/db} is present and has write permissions
     \item to start mongodb server invoke \verb|mongod|, to stop server hit \verb|Ctrl-C|
     \item to start shell invoke \verb|mongo|, to exit \verb|exit|. In fact, if we already know what database we wish to connect to, we can do
-		\begin{verbatim}
-			mongo db-name
-		\end{verbatim}
+        \begin{verbatim}
+            mongo db-name
+        \end{verbatim}
     \item if an error is shown as unclean shutdown, we need to invoke mongod with repair parameter
         \begin{verbatim}
             mongod --repair
         \end{verbatim}
     \item if it says already an instance of mongod is running, we can find and kill the process, followed by repair
-	\item to clear mongo shell invoke \textbf{cls} command.
+    \item to clear mongo shell invoke \textbf{cls} command.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +38,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Creating Databases, Collections and Documents}
 %-----------------------------------------------%
-\subsection{Show Current Databases}
+\subsection{Show List of Databases}
 \begin{verbatim}
 show dbs
 \end{verbatim}
@@ -49,6 +49,11 @@ There is no explicit command for creating a database, one we select a dbname, if
 use db-name
 \end{verbatim}
 When we invoked the above command, we actually set the variable \textbf{db} to \textbf{db-name}. \textbf{db} is the object we will be using to interact with our data.
+%-----------------------------------------------%
+\subsection{Show Collections in Current Database}
+\begin{verbatim}
+show collections
+\end{verbatim}
 %-----------------------------------------------%
 \subsection{Create / Select a Collection}
 There is no explicit command for creating a collection, just as there is no explicit command to create a database. We can simply refer it through dot notation after db is selected.
@@ -189,7 +194,7 @@ If we are reading a lot, better to denormalize - as it will make queries faster.
 \section{Queries}
 %-----------------------------------------------%
 \subsection{SELECT * WHERE}
-The following retrieves user document(s) WHERE email = ` ``johndoe@gmail.com'' '
+The following retrieves user document(s) where the email is equal to johndoe@gmail.com.
 \begin{verbatim}
 db.users.find({  email: "johndoe@gmail.com" });
 \end{verbatim}
@@ -209,9 +214,9 @@ db.links.find({ favorites: 100 }, { title: 1, url: true })
 \end{verbatim}
 A few points on the selection object:
 \begin{itemize}
-	\item we can set the fields we want to true or 1, official doc suggests 1. Notice in this method the \textbf{\_id} field is selected automatically.	
-	\item we can set the fields we don't want to false or 0, as before offical doc suggests 0. Here also \textbf{\_id} will be selected by default.
-	\item we can't mix exclude and include in the same object. This rule actually has an exception, where we can include the fields we want and exclude \textbf{\_id}.
+    \item we can set the fields we want to true or 1, official doc suggests 1. Notice in this method the \textbf{\_id} field is selected automatically. 
+    \item we can set the fields we don't want to false or 0, as before offical doc suggests 0. Here also \textbf{\_id} will be selected by default.
+    \item we can't mix exclude and include in the same object. This rule actually has an exception, where we can include the fields we want and exclude \textbf{\_id}.
 \end{itemize}
 %-----------------------------------------------%
 \subsection{Mongodb Operators: numerical}
@@ -219,16 +224,16 @@ All mongodb operators start with \$ sign.
 A query to retrieve docs where the favorites value is greater than 50 in the links collection can be written as:
 \begin{verbatim}
 db.links.find(
-	{ favorites: { $gt: 50 } },
-	{ title: 1, favorites: 1, _id: 0 }
+    { favorites: { $gt: 50 } },
+    { title: 1, favorites: 1, _id: 0 }
 );
 \end{verbatim}
 A list of operators:
 \begin{itemize}
-	\item \verb|$gt| - greater than		
-	\item \verb|$lt| - less than		
-	\item \verb|$lte| - less than or equal
-	\item \verb|$gte| - greater than or equal
+    \item \verb|$gt| - greater than     
+    \item \verb|$lt| - less than        
+    \item \verb|$lte| - less than or equal
+    \item \verb|$gte| - greater than or equal
 \end{itemize}
 
 We can use more than one operator at a time:
@@ -257,8 +262,8 @@ The previous query selects the links which do not have the tag code.
 A query that matches this or that:
 \begin{verbatim}
 db.users.find(
-	{ $or: [{'name.first': 'John'}, {'name.last': 'Doe'}] },
-	{ name: 1, _id: 0 }
+    { $or: [{'name.first': 'John'}, {'name.last': 'Doe'}] },
+    { name: 1, _id: 0 }
 );
 \end{verbatim}
 Notice how the \textbf{\$or} operator is outside the array of objects. 
@@ -270,7 +275,10 @@ For ``this and that'' use \textbf{\$and}.
 \subsection{Mongodb Operators: Check Existence of a Field}
 The following retrieves docs that have the field email.
 \begin{verbatim}
-db.users.find({ email: { $exists: true } }, { name: 1, _id: 0 });
+db.users.find(
+    { email: { $exists: true } }, 
+    { name: 1, _id: 0 }
+);
 \end{verbatim}
 Notice we could have used 1 instead of true.
 %-----------------------------------------------%
@@ -278,12 +286,12 @@ Notice we could have used 1 instead of true.
 The \textbf{\$not} operator is a special operator that works only in conjunction with other operators.
 \begin{verbatim}
 db.links.find(
-	{ favorites: { $mod: [5, 0] } }, 
-	{ title: 1, favorites: 1, _id: 0 }
+    { favorites: { $mod: [5, 0] } }, 
+    { title: 1, favorites: 1, _id: 0 }
 );
 db.links.find(
-	{ favorites: { { $mod: [5, 0] } } },
-	{ title: 1, favorites: 1, _id: 0 }
+    { favorites: { { $mod: [5, 0] } } },
+    { title: 1, favorites: 1, _id: 0 }
 );
 \end{verbatim}
 The first query finds the docs where favorites has a value divisible by 5, whereas the second finds the complement of it.
@@ -293,8 +301,8 @@ Whenever there is a negated form of an operator, we should use that instead of a
 \subsection{Mongodb Operators: elemMatch - Querying Arrays of Objects}
 \begin{verbatim}
 db.users.find(
-	{logins: { $elemMatch: { minutes: 20 } } }, 
-	{ name: 1, logins: 1, _id: 0 }
+    {logins: { $elemMatch: { minutes: 20 } } }, 
+    { name: 1, logins: 1, _id: 0 }
 );
 \end{verbatim}
 \textbf{logins} is an array of objects where minutes is a property of an object.
@@ -305,14 +313,14 @@ It is worth mentioning we should try to use the other operators before resorting
 db.users.find({ $where: "this.name.first === 'John'" });
 db.users.find("this.name.first === 'John'");
 db.users.find({ 
-	$where: "this.name.first === 'John'", 
-	age: 30 
+    $where: "this.name.first === 'John'", 
+    age: 30 
 });
 \end{verbatim}
 Moreover, we can use functions instead of raw string:
 \begin{verbatim}
 var f = function(){
-	return this.name.first === "John";
+    return this.name.first === "John";
 };
 db.users.find(f);
 db.users.find({ $where: f });
@@ -327,14 +335,14 @@ db.links.distinct("favorites");
 \subsection{Group}
 \begin{verbatim}
 db.links.group({
-	key: {userId: true},
-	initial: {favCount: 0},
-	reduce: function(doc, o){
-				o.favCount += doc.favorites
-			},
-	finalize: function(o){
-				o.name = db.users.findOne({_id: o.userId}).name
-			}
+    key: {userId: true},
+    initial: {favCount: 0},
+    reduce: function(doc, o){
+                o.favCount += doc.favorites
+            },
+    finalize: function(o){
+                o.name = db.users.findOne({_id: o.userId}).name
+            }
 });
 \end{verbatim}
 %-----------------------------------------------%
@@ -346,7 +354,7 @@ db.links.find({ title: /tuts\+$/ });
 The above selects all docs where the title field ends with `tuts+'. However, if we are looking for other conditions beside regular expression, we need to follow a bit different syntax:
 \begin{verbatim}
 db.links.find({ 
-	title: { $regex: /tuts\+$/, $ne: "Mobiletuts+" } 
+    title: { $regex: /tuts\+$/, $ne: "Mobiletuts+" } 
 });
 \end{verbatim}
 %-----------------------------------------------%
@@ -367,20 +375,20 @@ db.links.find({}, { title: 1, _id: 0 }).sort({ title: 1 });
 Combined with sort, we can use limit to find maximum and minimum values.
 \begin{verbatim}
 db.links.find(
-	{},
-	{
-		title: 1,
-		favorites: 1
-		_id: 0
-	}
+    {},
+    {
+        title: 1,
+        favorites: 1
+        _id: 0
+    }
 ).sort({ favorites: 1 }).limit(1);
 
 db.links.find(
-	{},
-	{
-		title: 1,
-		favorites: 1,
-		_id: 0}
+    {},
+    {
+        title: 1,
+        favorites: 1,
+        _id: 0}
 ).sort({ favorites: - 1 }).limit(1);
 \end{verbatim}
 The first query returns the doc with minimum favorites, the second with maximum.
@@ -389,9 +397,194 @@ One particularly useful case where we would want to use limit is for pagination,
 \begin{verbatim}
 db.links.find({}, {  title: 1, _id: 0}).skip(i * 3).limit(3);
 \end{verbatim}
+%-----------------------------------------------%
+\subsection{Returning Number of Documents Matched}
+We can use the count function to retrieve the number of mathed documents.
+\begin{verbatim}
+db.users.find().count()
+db.users.count()
+\end{verbatim}
+The second query returns the number of docs in the collection. Technically, the first one returns the same, but we could have passed a query object to the first queries find function.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Dropping Database}
+\section{Update}
+The first thing that we should know about update is it updates the first match only, unless we pass an extra parameter. More on this later.
+%-----------------------------------------------%
+\subsection{Update by Replacement}
+The object we are updating gets totally replaced except for the \textbf{\_id} field. We use the \textbf{update} function passing as first parameter our query and the second the new object wich should replace the returned object.
+\begin{verbatim}
+db.users.update(
+    { 'name.first': 'John' }, 
+    { job: 'developer' }
+);
+\end{verbatim}
+In this case the doc where the first name is John will have only two fields, one being the \_id field, the other a job field. All the previous fields get wiped out.
+%-----------------------------------------------%
+\subsection{Update or Insert: Upsert}
+Some cases we want to update a doc if present, or insert. In that case we need to pass a third parameter (true) to our update function.
+\begin{verbatim}
+db.user.update(
+    { name: "Kate Wills" },
+    { name: "Kate Wills", job: "LISP Developer" }, 
+    true
+);
+\end{verbatim}
+Here if there is any doc where name is "Kate Wills", it will get updated where the new doc will have only three fields: \_id, name and job. If there is no doc where name is "Kate Wills", one will be created.
+%-----------------------------------------------%
+\subsection{Update by Modification: Increment}
+A good way to remember the syntax of operators for modification is that in query we would put the field outside and the operator inside an object. But for modification we do the reverse - we put the operator outside and the field inside an object.
+
+The following query incerments the favorite field by 5, provided the doc is one where the title is "Nettuts+". For decrementing we can just use a negative number.
+\begin{verbatim}
+db.links.update(
+    { title: "Nettuts+" },
+    { $inc: { favorites: 5 } }
+);
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Update by Modification: Set and Unset}
+We can modify a particular field through the set operator. As an aside, we can use javascript to structure our operations.
+\begin{verbatim}
+var q = { name: "Kate Wills" };
+db.users.update(q, { $set: { job: "Web Developer" } });
+\end{verbatim}
+Here all the fields of the docs where name is "Kate Wills" remains unchanged, except for the job field; which is changed to "Web Developer".
+
+It is worth noting that the field we are setting if non-existent, will be created.
+
+Moreover, it is possible to totally get rid of a field through unset operator. However, we have to explicitly mention the value of the field while doing so.
+\begin{verbatim}
+db.users.update(
+    { name: "Kate Wills" },
+    { $unset: { job: "Web Developer" } }
+);
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Updating all Matches}
+We need to pass a fourth parameter (true) for updating all matches. The third parameter wich indicates upsert should be false.
+%-----------------------------------------------%
+\subsection{Updating using Save}
+\begin{verbatim}
+var bob = db.users.findOne({ 'name.first': 'Bob' });
+bob.job = 'Server Admin';
+db.users.save(bob);
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Updating using findAndModify}
+The \textbf{findAndModify} function finds, modifies and returns a single document. It accepts an object with some properties, a few of those are:
+\begin{itemize}
+    \item \textbf{query} - selection criteria for the modification
+    \item \textbf{update} - necessary update to perform, the update or remove property must be present
+    \item \textbf{sort} - as only one doc will be modified, sort tells the order to sort and the first one in the sequence gets modified
+    \item \textbf{new} - if true, returns modified doc, otherwise returns the orginal
+    \item \textbf{fields} - subset of fields to return
+\end{itemize}
+\begin{verbatim}
+db.links.findAndModify({
+    query: { favorites: 110 },
+    update: { $inc: { favorites: 10 } },
+    sort: { title: 1 },
+    new: true,
+    fields: { title: 1, favorites: 1, _id: 0 }
+});
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Updating Arrays: Add Items}
+We can add element to an array through the \textbf{\$push} operator. If we want to add more than one elements, we can use \textbf{\$pushAll} operator.
+\begin{verbatim}
+var n = { title: "Nettuts+" };
+db.links.update(n, { $push: { tags: 'blog' } });
+db.links.update(n, { $pushAll: { tags: ['one', 'two'] } });
+\end{verbatim}
+One particular point to take care of is if we use array with push, the whole array is going to be pushed as a single element.
+
+Another thing to take note of is if there is a particular element in the array and we try to push it nonetheless, it will be added; resulting in duplicates. If we really want to check this, we have to use \textbf{\$addToSet}. If we want to add multiple values using addToSet, we have to follow a bit different syntax:
+\begin{verbatim}
+var n = { title: "Nettutsplus" };
+db.links.update(n, { $addToset: { tags: 'one' } });
+db.links.update(
+    n, 
+    { 
+        $addToset: { 
+            tags: { 
+                $each: ['three', 'four'] 
+            } 
+        } 
+    }
+);
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Updating Arrays: Remove Items}
+We can use the following operators to remove items from arrays:
+\begin{itemize}
+    \item \textbf{\$pull} - remove a single item    
+    \item \textbf{\$pullAll} - remove more than one items
+    \item \textbf{\$pop} - remove a single item either from end (1) or starting (-1), effectively allowing us to remove items without knowing their values. 
+\end{itemize}
+\begin{verbatim}
+var n = { title: "Nettuts" };
+db.links.update(n, { $pull: { tags: 'four' } });
+db.links.update(n, { $pullAll: { tags: ['one', 'two'] } });
+db.links.update(n, { $pop: { tags: 1 } });
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Renaming Fields}
+In the following example we are renaming the field ``random'' to ``something\_else'', provided we do have the random field set to true.
+\begin{verbatim}
+db.users.update(
+    { random: true },
+    { $rename: { 'random': 'something_else' } }, 
+    false, 
+    true
+);
+\end{verbatim}
+%-----------------------------------------------%
+\subsection{Oddity of Arrays of Objects}
+Assume we have an array of objects, and the name of the array is ``logins''. We further assume the objects have a property named ``minutes''. Then it is possible to refer to the ``minutes'' as \textbf{logins.minutes}.
+%-----------------------------------------------%
+\subsection{Position Operator}
+Let us assume we have the following documents:
+\begin{verbatim}
+{ _id: 1, grades: [80, 85, 90] }
+{ _id: 2, grades: [88, 90, 92] }
+{ _id: 3, grades: [85, 100, 90] }
+\end{verbatim}
+To update 80 to 82 in the grades array in the first document, use the positional \$ operator if you do not know the position of the element in the array:
+\begin{verbatim}
+db.students.update( 
+    { _id: 1, grades: 80 },
+    { $set: { "grades.$" : 82 } } 
+);
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Deleting}
+To empty the whole collection we can use remove without any parameters:
+\begin{verbatim}
+db.users.remove()
+\end{verbatim}
+To delete selected docs, just pass query object as a parameter:
+\begin{verbatim}
+db.users.remove({ name: "Kate Wills" });
+\end{verbatim}
+We can use \textbf{findAndModify} to remove docs as well:
+\begin{verbatim}
+db.users.findAndModify({
+    query: { 'name.first': /B/ },
+    remove: true
+});
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Dropping Databases and Collections}
+To drop a database:
+\begin{verbatim}
+use db-name;
+db.dropDatabase();
+\end{verbatim}
+Heads up - the db variable will still show the name of the dropped database, but the ``show dbs'' command will not list that.
+
+To drop a collection:
 \begin{verbatim}
 db.users.drop();
 \end{verbatim}
