@@ -1,0 +1,101 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Nodejs Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Node Shell (REPL)}
+\begin{itemize}
+\item to start shell use \textbf{node}
+\item to quit shell use \textbf{process.exit(0)}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Difference between Browser and Node`s Engine}
+\begin{itemize}
+\item \textbf{window}, \textbf{localtion}, \textbf{document} are only present in browser
+\item \textbf{global} may be present in browsers as window object, node has a lot of functions in global object that are not in chrome
+\item \textbf{module} and \textbf{process} are only present in node
+\item \textbf{console} object is present in both
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Requiring Files}
+We have to specify the relative path of the file we want to include.
+We use the \textbf{require} function to do that, passing as parameter the path.
+
+For core modules or modules installed locally for a project, we don't need to add path - just the name suffices.
+
+We can leave out the ``js'' part of the filename.
+In the file being included, we have to assign the ``module.exports'' to whatever we want to include.
+
+Instead of module.exports, we can use \textbf{exports.property1}, \textbf{exports.property2} and so on.
+
+In fact, we can also add a folder, provided it has an ``index.js'' file in it.
+
+To better delineate scope, it is better to always use ``var'' while assigning / declaring variables.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A Minimalistic Node Server}
+\begin{verbatim}
+var http = require('http');
+
+http.createServer(function(req, res){
+	res.writeHead(200, { 'Content-Type': 'text/plain' });
+	res.end('Welcome to Node Essentials\n');
+}).listen(3000, '127.0.0.1');
+
+console.log('server running on 127.0.0.1:3000');
+\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Event Loop}
+The event loop starts when the node script starts.
+All I/O in node are non blocking.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NPM}
+%------------------------------------------------%
+\subsection{Creating a Project}
+We can use \textbf{npm init} command to initiate a node project.
+\begin{itemize}
+\item \textbf{name} - defaults to the folder where the package.json file will reside in.
+\item \textbf{version} - version of the project in ``0.0.0'' format.
+\item \textbf{description} - description of the project
+\item \textbf{entry point} - defaults to index.js
+\item \textbf{test command} - we can leave blank if we don't want to perform unit tests
+\item \textbf{git repository} - required if we are tryng to distribute our project
+\item \textbf{keywords} - again for distributing projects elsewhere
+\item \textbf{author} - use \verb|name <email>| format
+\end{itemize}
+
+To add modules to our project we use:
+\begin{verbatim}
+npm install --save express
+\end{verbatim}
+Invoking install with save records the version of the module being installed in package.json file.
+The "dependencies" property of the root level object is an object holding packages and their version.
+%------------------------------------------------%
+\subsection{Versioning with NPM}
+\begin{itemize}
+\item \textbf{*} downloads the latest version
+\item \textbf{nmp update} is used to get the required version of a package, provided it changed in the mean time.
+\end{itemize}
+%------------------------------------------------%
+\subsection{Miscellaneous use of NPM}
+\begin{itemize}
+\item We can start a project by invoking \textbf{npm start} command.
+\item To uninstall packages first we can delete them from package.json, and issue \textbf{prune} command.
+\end{itemize}
+
+\end{document}
