@@ -109,5 +109,21 @@ sudo dpkg-reconfigure packagename
 		\end{verbatim}
 	\item to unmount use \verb|umount /dev/sda3|.
 \end{itemize}
+%-----------------------------------------------%
+\subsection{Changing Brightness}
+sudo gedit /etc/rc.local
+before ``exit 0'' type in: ``echo 4 > /sys/class/backlight/acpi\_video0/brightness''
+%-----------------------------------------------%
+\subsection{Install Java}
+sudo apt-get purge openjdk*
+sudo rm /var/lib/dpkg/info/oracle-java7-installer*
+sudo apt-get purge oracle-java7-installer*
+sudo rm /etc/apt/sources.list.d/*java*
+sudo apt-get update
+ 
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java7-installer
+sudo apt-get install oracle-java7-set-default
 
 \end{document}
