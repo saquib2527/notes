@@ -1,0 +1,161 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Angularjs Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Terminologies}
+\begin{itemize}
+	\item \textbf{directive} - a marker on a html tag that tells angular to run or reference some javascript code
+	\item \textbf{modules} - where we write our pieces of Angular app. We also write our dependencies here
+	\item \textbf{expressions} - allow us to use dynamic values
+	\item \textbf{controllers} - places where we define our app's behavior by defining functions and values
+	\item \textbf{filters} - used for formatting values
+	\item \textbf{services} - used to retrieve data from etc.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modules}
+A sample angular module:
+\begin{verbatim}
+/* app.js */
+var app = angular.module('store', []);
+\end{verbatim}
+Here angular refers to the included library, store is the name of the module and the array is the list of dependencies, in this case empty.
+
+In fact, it is better to wrap our js code in a closure:
+\begin{verbatim}
+(function(){
+	var app = angular.module('store', []);
+})();
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Expression}
+Expressions are surrounded by double curly braces.
+\begin{verbatim}
+I have {{ 4 + 6 }} pens.
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Directives}
+A few directives:
+\begin{itemize}
+	\item \textbf{ng-app} - defines the module, must be present at the html tag for the page to be an Angular app
+	\item \textbf{ng-controller} - defines scope of the controller on a DOM element
+	\item \textbf{ng-show} - hides or shows elements
+	\item \textbf{ng-hide} - same as show, works on complementary logic
+	\item \textbf{ng-repeat} - used for sort of a ``foreach loop''
+	\item \textbf{ng-src} - if we are getting the value of src from angular, we need to use this instead of html src property
+		\begin{verbatim}
+			<img ng-src="product.images[0]">
+		\end{verbatim}
+	\item \textbf{ng-init} - initializes a value
+	\item \textbf{ng-click} - action when clicked
+	\item \textbf{ng-class} - excepts an object which has as prperty the name of a class and as value an expression.
+		So when the expression is true, the class will be set.
+	\item \textbf{ng-model} - binds form element value to the property
+	\item \textbf{ng-submit} - allows us to all a function when the form is submitted
+	\item \textbf{ng-include} - used for including html snippets, it is worth noting we need to use double quotes and single quotes both -
+		in that order
+\end{itemize}
+%-----------------------------------------------%
+\subsection{Custom Directives}
+In js file:
+\begin{verbatim}
+app.directive("productTitle", function(){
+	return {
+		restrict: 'E',
+		templateUrl: 'product-title.html'
+	};
+});
+\end{verbatim}
+Here E stands for html element, generally restrict is used to define type of directive.
+Other type can be attribute. We use element directive for UI Widgets, whereas attribute directive for mixins, such as tooltips.
+templateUrl is used to give the source of the file to be loaded as template.
+
+In html file:
+\begin{verbatim}
+<product-title><product-title>
+\end{verbatim}
+
+We can also use controllers inside our custom directive:
+\begin{verbatim}
+app.directive("productTitle", function(){
+	return {
+		restrict: 'E',
+		templateUrl: 'product-title.html',
+		controller: function(){
+			...
+		},
+		controllerAs: 'alias'
+	};
+});
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Controllers}
+We need to capitalize the controller name. Assuming the variable app has reference to our module, this sets up a controller:
+\begin{verbatim}
+var gem = {
+	name: "Dodecahedron",
+	price: 2.95,
+	description: "awesome"
+};
+app.controller('StoreController', function(){
+	this.product = gem;
+});
+\end{verbatim}
+For passing data through controller, we need to set data to be a property of our controller.
+
+We need to specify the html tag upon which the controller should act through an ng-controller directive.
+This effectively sets the ``scope'' of the controller. We can use aliases if we want:
+\begin{verbatim}
+<div ng-controller="StoreController as store">
+	<h1>{{ store.product.name }}</h1>
+</div>
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Filters}
+Filters are used for formatting. A few filters:
+\begin{itemize}
+	\item \textbf{currency} - formats numerical values to dollars
+	\item \textbf{date} - formats date with the supplied options
+	\item \textbf{uppercase} - converts string to all caps
+	\item \textbf{limitTo} - limits characters, list items etc. to a specific number
+	\item \textbf{orderBy} - field preceded by minus sign means descending order, without sign means ascending 
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Form Validation}
+First we need to turn off default html validation through ``novalidate'' property.
+\begin{verbatim}
+{{ reviewForm.$valid }}
+\end{verbatim}
+Here ``reviewForm'' is the name of the form.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Services}
+A few services:
+\begin{itemize}
+	\item \$http
+	\item \$log
+	\item \$filter
+\end{itemize}
+We can attach services to controllers:
+\begin{verbatim}
+app.controller('SomeController', ['$http', '$log', function($http, $log){
+	
+}]);
+\end{verbatim}
+
+
+\end{document}
