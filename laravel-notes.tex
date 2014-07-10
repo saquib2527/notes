@@ -27,13 +27,18 @@ sudo chmod -R 755 /var/www
 %-----------------------------------------------%
 \subsection{Creating Virtual Hosts}
 First we need create a file in \emph{/etc/apache2/sites-avalilable}, for example let us assume the name is \emph{laravel.conf}.
-We can open up the file by \verb|sudo vim /etc/apache2/sites-available/laravel.conf|. Then inside we have to put:
+We can open up the file by:
+\begin{verbatim}
+sudo vim /etc/apache2/sites-available/laravel.conf
+\end{verbatim}
+
+Then inside we have to put:
 \begin{verbatim}
 <VirtualHost *:80>
 	ServerName laravel.dev
 	ServerAlias www.laravel.dev
 	DocumentRoot /var/www/laravel/public
-	<Directory>
+	<Directory /var/www/laravel/public>
 		AllowOverride all
 	</Directory>
 </VirtualHost>
