@@ -1,0 +1,247 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{JS Functions}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Immediate Execution}
+\begin{verbatim}
+var plus = function(a, b){
+    return a + b;
+}();
+\end{verbatim}
+The parentheses at the end makes it immediately invokable.
+The above code will actually return \textbf{NaN}.
+To get a result we can pass parameters within parentheses.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Invoking Functions}
+%------------------------------------------------%
+\subsection{Traditional Invocation}
+\begin{verbatim}
+var plus = function(a, b){
+    return a + b;   
+};
+
+plus();
+\end{verbatim}
+In this case the \textbf{this} reference is bound to global scope.
+%------------------------------------------------%
+\subsection{Oddity of return}
+Return can actually be considered as a function.
+\begin{verbatim}
+function plus(a, b){
+    return (
+        console.log(a + b),
+        console.log(this),
+        console.log(arguments)
+    );
+}
+
+plus(2, 2);
+\end{verbatim}
+A point to note is \textbf{arguments} is an array like object that is available for every functions.
+Notice this is not actually an array, as it devoids a lot of its functions.
+%------------------------------------------------%
+\subsection{Difference in \_\_proto\_\_}
+\begin{verbatim}
+var Person = function(){
+    var name;
+    var ssn;    
+};
+
+fPerson = new Person();
+
+console.dir(fPerson);
+\end{verbatim}
+Here we see \textbf{\_\_proto\_\_} shows \textbf{Object}.
+
+\begin{verbatim}
+function Person(){
+    var name;
+    var ssn;    
+};
+
+fPerson = new Person();
+
+console.dir(fPerson);
+\end{verbatim}
+Here we see \textbf{\_\_proto\_\_} shows \textbf{Person}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Prototype Extension}
+JS has prototypal inheritance.
+\begin{verbatim}
+var speak = function(message){
+    console.log(message);
+};
+
+var Dog = function(){
+    var name;
+    var breed;
+};
+\end{verbatim}
+The benefit of extending function in this way is we can add the function speak to other classes.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{call and apply}
+\textbf{call} and \textbf{apply} allow us to change the scope of the function. It follows this syntax:
+\begin{verbatim}
+//singleArgument can be object or primitive
+functionName.call(thisReference, singleArgument); 
+functionName.apply(thisReference, arrayOfArguments);
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{arguments}
+\textbf{arguments} is an array like parameter passed to all functions implicitly.
+We can random access this data structure, we can also find length through the \textbf{length} property.
+But we can not use other array functions such as pop etc.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Anonymous Closure / Self Executing Function}
+\begin{verbatim}
+(function(){
+    var a = "hello";
+    console.log("anonymous closure!!");
+})();
+\end{verbatim}
+Notice variable a's scope is constrained within the anonymous closure
+i.e. a will not be recognized outisde the function.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hoisting and Scope}
+\begin{itemize}
+\item Scope within function. In the following code the scope of dogName is restricted within the function.
+\begin{verbatim}
+function myDog(){
+    var dogName = "Rover";  
+}
+console.log(dogName); //error
+\end{verbatim}
+\item any variable created without the var keyword becomes global.
+\item nested function looks for a variable inside that function. If none is available, it looks for one in the parent.
+\item variable declarations (not assignments) are hoisted.
+\begin{verbatim}
+function myDog(){
+    console.log(dogName + " says woof!");
+    var dogName = "Fido";   
+}
+myDog();
+\end{verbatim}
+The above would output ``undefined says woof!''. The above is actually translated internally as:
+\begin{verbatim}
+function myDog(){
+    var dogName;
+    console.log(dogName + " says woof!");
+    dogName = "Fido";   
+}
+\end{verbatim}
+\item function definitions also get hoisted, meaning we can call a function before its definition.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Creating and Namespacing Modules}
+Basically we assign a self executing function to a variable.
+This way our module variables do not conflict with outsider ones.
+To communicate with the outside world we have to use return statement.
+\begin{verbatim}
+var myModule = (function(){
+    return {
+        speak: function(){
+            console.log("hello");
+        }
+    };  
+})();
+
+myModule.speak();
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Passing Values to Functions}
+It is better to pass values as an object rather than single entities.
+In this way we can pass multiple values.
+\begin{verbatim}
+var myModule = (function(){
+    return {
+        speak: function(){
+            console.log(arguments[0].say);
+        }
+    };
+})();
+
+myModule.speak({say: "woof!"});
+\end{verbatim}
+
+The above code suffers from a potential risk of error.
+If the user does not pass any argument, we will get an error.
+To fix this inside the speak function we can write:
+\begin{verbatim}
+var myArgs = arguments[0] || '';
+var statement = myArgs.say || 'hello';
+console.log(statement);
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Default Values}
+Even a better way would be to set up a DEFAULTS object in our module.
+\begin{verbatim}
+var myModule = (function(){
+    var DEFAULTS = {
+        say: "hello"
+    };
+
+    return {
+        speak: function(){
+            var myArgs = arguments[0] || {};
+            var statement = myArgs.say || DEFAULTS.say; 
+            console.log(statement);
+        }
+    };
+})();
+
+myModule.speak(); // hello
+myModule.speak({ say: "hi" }); //hi
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Chaining Multiple Methods}
+\begin{verbatim}
+var myModule = (function(){
+    var DEFAULTS = {
+        say: "hello",
+        speed: "normal"
+    };
+
+    return {
+        speak: function(){
+            var myArgs = arguments[0] || {};
+            var statement = myArgs.say || DEFAULTS.say; 
+            console.log(statement);
+            //makes chainable
+            return this; //returns myModule object
+        },
+        run: function(){
+            var myArgs = arguments[0] || {};
+            var running = myArgs.speed || DEFAULTS.speed;   
+            console.log("running..." + running);
+            //makes chainable
+            return this; //returns myModule object
+        }
+    };
+})();
+
+myModule.speak().run({speed: "fast"}).speak({say: "whatever bro"}).run();
+//hello
+//running...fast
+//whatever bro
+//running...normal
+\end{verbatim}
+
+
+\end{document}
