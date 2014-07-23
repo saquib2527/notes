@@ -1,0 +1,28 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{MySQL notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Load Data from CSV}
+\begin{verbatim}
+mysql --local-infile=1 -h localhost -u root
+
+use dbname;
+
+LOAD DATA LOCAL INFILE 'filename.csv'
+INTO TABLE tablename
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+(field1, field2, field3);
+\end{verbatim}
+
+\end{document}

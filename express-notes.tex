@@ -1,0 +1,58 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{Express Notes}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Installation}
+For global installation we can use:
+\begin{verbatim}
+sudo npm -g install express-generator
+\end{verbatim}
+Note that we have to use ``sudo''. With the release of express 4 we need to install ``express-genrator'', rather than only ``express''.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Getting Help}
+\begin{verbatim}
+express --help
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Generating Skeleton App}
+\begin{verbatim}
+express appName
+express appName -c less
+\end{verbatim}
+The first command simply creates a directory named ``appName'' in the current directory. This directory holds the skeleton framework. The second command does the same, but it also tells to include the less css engine.
+
+We can then install the dependencies and run our app:
+\begin{verbatim}
+cd appName && npm install
+DEBUG=appName ./bin/www
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A Minimal Skeleton}
+We can simply delete the \textbf{public}, \textbf{views} and \textbf{routes} folders. Modified \textbf{app.js}:
+\begin{verbatim}
+var express = require('express');
+var http = require('http');
+
+var app = express();
+
+app.set('port', process.env.PORT || 3000);	
+
+http.createServer(app).listen(app.get('port'), function(){
+	console.log("Express Server Listening on Port " + app.get('port'));
+});
+\end{verbatim}
+
+
+\end{document}
