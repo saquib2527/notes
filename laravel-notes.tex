@@ -15,6 +15,17 @@
 %-----------------------------------------------%
 \subsection{Installing Laravel}
 \begin{verbatim}
+cd /var/www
+wget https://github.com/laravel/laravel/archive/master.zip
+unzip master.zip
+mv laravel-master sitename
+cd sitename
+sudo composer install
+sudo chmod -R 777 .
+\end{verbatim}
+Optionally we could remove master.zip.
+Alternatively:
+\begin{verbatim}
 composer create-project laravel/laravel --prefer-dist /var/www/laravel
 \end{verbatim}
 %-----------------------------------------------%
