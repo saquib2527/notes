@@ -69,4 +69,21 @@ sudo a2ensite laravel.conf
 sudo service apache2 restart
 \end{verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Enable Debugging}
+In \textbf{app/config/app.php} set debug to true.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Helper Functions}
+\begin{itemize}
+	\item create a folder named \textbf{libraries} inside app folder.
+	\item in the new folder create a file named \textbf{Helper.php}.
+	\item put all your static helper functions in this file.
+	\item in \textbf{start/global.php} edit the \textbf{ClassLoader::addDirectories} array
+		\begin{verbatim}
+		add_path().'/libraries'
+		\end{verbatim}
+	\item use the functions anywhere using \textbf{Helper::function} syntax.
+\end{itemize}
+
 \end{document}
