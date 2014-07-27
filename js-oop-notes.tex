@@ -1,0 +1,208 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{upquote}
+
+\begin{document}
+
+\title{JS Notes on OOP and Functions}
+\author{Nazmus Saquib}
+
+\maketitle
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Intro to JS Objects}
+JS Objects are said to be classless / dynamic, so as to say they are not restricted by their class definition,
+ and may change during the duration of execution.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Object Creation}
+%------------------------------------------------%
+\subsection{Constructor Function}
+Define functions on prototype, rest on the constructor. Otherwise, every time we create an object,
+the function also gets created.
+\begin{verbatim}
+function Person(fname, lname){
+	this.fname = fname;
+	this.lname = lname;
+}
+Person.prototype.get_name = function(){
+	return this.fname + " " + this.lname;
+}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Protect Global Scope}
+Objects need to be created using the following syntax:
+\begin{verbatim}
+var jill = new Person(fname, lname);
+\end{verbatim}
+If we leave out the new keyword, the object is scoped globally. To protect against this, we can add 
+a check at the beginning of the constructor function:
+\begin{verbatim}
+if(this === window){
+	return new Person(fname, lname);
+}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Prototypal Revisited}
+\begin{verbatim}
+/*protecting against browser that dont support create*/
+if(typeof Object.create !== 'function'){
+	Object.create = function(o){
+		function F(){}
+		F.prototype = o;
+		return new F();
+	};
+}
+
+var person = {
+	fname: '',
+	lname: ''
+};
+var jill = Object.create(person);
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Creating Generic Object}
+\begin{verbatim}
+var obj1 = new Object();
+\end{verbatim}
+Notice the variable is actually the reference to the object, not container for the object as in primitive types.
+
+\begin{verbatim}
+var obj2 = obj1;
+\end{verbatim}
+Here obj2 references the same object as obj1.
+
+\begin{verbatim}
+obj1 = null;
+\end{verbatim}
+For dereferencing objects we can assign them to null.
+%------------------------------------------------%
+\subsection{Literal Form of Object Creation}
+\begin{verbatim}
+var book = {
+    name: "A Book",
+    year: "2014"
+};
+\end{verbatim}
+It is possible to use string literals as property names, which we actually need if the property has spaces or special characters.
+%------------------------------------------------%
+\subsection{Adding Properties}
+JS allows us to add properties to objects whenever we want.
+\begin{verbatim}
+obj1.prop1 = "property 1";
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The this Object}
+Every scope in JavaScript has a this object that represents the calling object for the function.
+In the global scope, this represents the global object (window in web browsers).
+When a function is called while attached to an object, the value of this is equal to that object by default.
+The following code snippet illustrates the notion:
+\begin{verbatim}
+function sayName(){
+    console.log(this.name);
+}
+
+var person1 = {
+    name: "John",
+    say: sayName
+};
+
+var person2 = {
+    name: "Charles",
+    say: sayName
+};
+
+var name = "Michael";
+
+person1.say(); //John
+person2.say(); //Charles
+sayName(); //Michael
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Properties}
+JS has \textbf{own properties} and \textbf{prototype properties}. Own properties are assigned as stated previously.
+To check any kind of property of an oject we use:
+\begin{verbatim}
+if("prop" in obj){}
+\end{verbatim}
+To check existence of own property we use:
+\begin{verbatim}
+if(obj.hasOwnProperty("prop")){}
+\end{verbatim}
+We can also remove a property:
+\begin{verbatim}
+delete obj.prop;
+\end{verbatim}
+All properties (both prototye and own) added to an object are enumerable,
+i.e. we can iterate over them using a for in loop.
+\begin{verbatim}
+var prop;
+for(prop in obj){
+    console.log("Name: " + prop);
+    console.log("Value: " + obj[prop] );   
+}
+\end{verbatim}
+It is possible to retrieve an enumerable list of own property names:
+\begin{verbatim}
+var props = Object.keys(obj);
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Inheritance}
+%------------------------------------------------%
+\subsection{Through prototype}
+Assuling Person and SuperHuman are already defined:
+\begin{verbatim}
+SuperHuman.prototype = new Person();
+SuperHuman.prototype.constructor = SuperHuman;
+\end{verbatim}
+Notice as we are redefining the prototype, we need to make sure constructor is
+assigned seperately; as it will get overridden too.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Functions}
+Functions are actually objects in JS. The internal property \textbf{Call} differentiates functions form other objects. As functions are first-class citizens in JS, we could:
+\begin{itemize}
+\item assign them to variables
+\item add them to objects
+\item pass them to other functions as arguments
+\item return them from functions
+\item basically use them wherever we can use any other reference value
+\end{itemize}
+%------------------------------------------------%
+\subsection{Function Declaration}
+\begin{verbatim}
+function add(num1, num2){
+    return num1 + num2;
+}
+\end{verbatim}
+Function declarations are hoisted to the top of the context. So basically we could first use a function and then declare it.
+%------------------------------------------------%
+\subsection{Function Expression}
+\begin{verbatim}
+var add = function(n1, n2){
+    return n1 + n2;
+};
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Function Parameters}
+We can pass any number of parameters to any function without causing error.
+Function parameters are stored in array like structure called \textbf{arguments}.
+The \textbf{length} prperty tells how many arguments are present. 
+The \textbf{arguments} prperty is automatically present inside a function.
+The length property of a function defines its expected arity.
+%------------------------------------------------%
+\subsection{Function Overloading}
+Not really possible in JS, the latest signature overwrites the previous ones.
+%------------------------------------------------%
+\subsection{Changing this}
+The \emph{call} function has the following format:
+\begin{verbatim}
+functionName.call(context, parameter)
+\end{verbatim}
+The \emph{apply} has similar signature, but it accepts an array as the second parameter.
+
+\end{document}
