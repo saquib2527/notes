@@ -35,4 +35,13 @@ FROM information_schema.TABLES
 WHERE table_schema = "dbname" ; 
 \end{verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Unicode Characters}
+\begin{verbatim}
+CREATE TABLE bangla(
+    id          INTEGER     PRIMARY KEY,
+    question    VARCHAR(255)
+) DEFAULT CHARSET=utf8;
+\end{verbatim}
+
 \end{document}
