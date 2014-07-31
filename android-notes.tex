@@ -142,5 +142,14 @@ All the tools can be found in \emph{sdk/tools}, the adb has been moved.
 		\end{verbatim}
 	\item \verb|ant debug| from the project root folder builds the project with debugging
 \end{itemize}
+%-----------------------------------------------%
+\subsection{ADB push}
+We can transfer files from pc to device by:
+\begin{verbatim}
+adb push path/to/file/pc /storage/sdcard0/downloads
+\end{verbatim}
+Here we have assumed we want to put files in the downloads folder.
+One way to check the path of android device is to use bluetooth history.
+If we want to transfer all files of a directory, we can use ``.'' in place of pc path.
 
 \end{document}
