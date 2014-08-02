@@ -23,11 +23,11 @@ Define functions on prototype, rest on the constructor. Otherwise, every time we
 the function also gets created.
 \begin{verbatim}
 function Person(fname, lname){
-	this.fname = fname;
-	this.lname = lname;
+    this.fname = fname;
+    this.lname = lname;
 }
 Person.prototype.get_name = function(){
-	return this.fname + " " + this.lname;
+    return this.fname + " " + this.lname;
 }
 \end{verbatim}
 %------------------------------------------------%
@@ -40,7 +40,7 @@ If we leave out the new keyword, the object is scoped globally. To protect again
 a check at the beginning of the constructor function:
 \begin{verbatim}
 if(this === window){
-	return new Person(fname, lname);
+    return new Person(fname, lname);
 }
 \end{verbatim}
 %------------------------------------------------%
@@ -48,16 +48,16 @@ if(this === window){
 \begin{verbatim}
 /*protecting against browser that dont support create*/
 if(typeof Object.create !== 'function'){
-	Object.create = function(o){
-		function F(){}
-		F.prototype = o;
-		return new F();
-	};
+    Object.create = function(o){
+        function F(){}
+        F.prototype = o;
+        return new F();
+    };
 }
 
 var person = {
-	fname: '',
-	lname: ''
+    fname: '',
+    lname: ''
 };
 var jill = Object.create(person);
 \end{verbatim}
@@ -91,6 +91,25 @@ It is possible to use string literals as property names, which we actually need 
 JS allows us to add properties to objects whenever we want.
 \begin{verbatim}
 obj1.prop1 = "property 1";
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cloning an Object}
+Note that assigning one object to another results in reference passing, i.e.
+change in one will still affect the another. We can use a custom function for copy
+by value:
+\begin{verbatim}
+function clone(obj){
+    if(obj == null || typeof(obj) != 'object'){
+        return obj;
+    }
+
+    var temp = obj.constructor();
+    for(var key in obj){
+        temp[key] = clone(obj[key]);
+    }
+    return temp;
+}
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
