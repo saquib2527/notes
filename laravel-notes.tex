@@ -1,4 +1,4 @@
-\documentclass[a4paper, 12pt]{article}
+\documentclass[a4paper, 10pt]{article}
 
 \usepackage{upquote}
 
@@ -9,6 +9,12 @@
 
 \maketitle
 \tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Note to the Reader}
+\begin{itemize}
+    \item `\textbackslash' inside code denotes continuation of line
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Setting up Laravel}
@@ -26,18 +32,22 @@ sudo chmod -R 777 .
 Optionally we could remove master.zip.
 Alternatively:
 \begin{verbatim}
-composer create-project laravel/laravel --prefer-dist /var/www/laravel
+composer create-project laravel/laravel \
+    --prefer-dist /var/www/laravel
 \end{verbatim}
 %-----------------------------------------------%
 \subsection{Granting Permissions}
-If the following does not work just use \verb|sudo chmod -R 777 /var/www|
+If the following does not work just use
+
+\verb|sudo chmod -R 777 /var/www|
 \begin{verbatim}
 sudo chown -R $USER:$USER /var/www/laravel
 sudo chmod -R 755 /var/www
 \end{verbatim}
 %-----------------------------------------------%
 \subsection{Creating Virtual Hosts}
-First we need create a file in \emph{/etc/apache2/sites-avalilable}, for example let us assume the name is \emph{laravel.conf}.
+First we need create a file in \emph{/etc/apache2/sites-avalilable},
+for example let us assume the name is \emph{laravel.conf}.
 We can open up the file by:
 \begin{verbatim}
 sudo vim /etc/apache2/sites-available/laravel.conf
@@ -46,12 +56,12 @@ sudo vim /etc/apache2/sites-available/laravel.conf
 Then inside we have to put:
 \begin{verbatim}
 <VirtualHost *:80>
-	ServerName laravel.dev
-	ServerAlias www.laravel.dev
-	DocumentRoot /var/www/laravel/public
-	<Directory /var/www/laravel/public>
-		AllowOverride all
-	</Directory>
+    ServerName laravel.dev
+    ServerAlias www.laravel.dev
+    DocumentRoot /var/www/laravel/public
+    <Directory /var/www/laravel/public>
+        AllowOverride all
+    </Directory>
 </VirtualHost>
 \end{verbatim}
 %-----------------------------------------------%
@@ -76,14 +86,165 @@ In \textbf{app/config/app.php} set debug to true.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Helper Functions}
 \begin{itemize}
-	\item create a folder named \textbf{libraries} inside app folder.
-	\item in the new folder create a file named \textbf{Helper.php}.
-	\item put all your static helper functions in this file.
-	\item in \textbf{start/global.php} edit the \textbf{ClassLoader::addDirectories} array
-		\begin{verbatim}
-		add_path().'/libraries'
-		\end{verbatim}
-	\item use the functions anywhere using \textbf{Helper::function} syntax.
+    \item create a folder named \textbf{libraries} inside app folder.
+    \item in the new folder create a file named \textbf{Helper.php}.
+    \item put all your static helper functions in this file.
+    \item in \textbf{start/global.php} edit the \textbf{ClassLoader::addDirectories} array
+        \begin{verbatim}
+        add_path().'/libraries'
+        \end{verbatim}
+    \item use the functions anywhere using \textbf{Helper::function} syntax.
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Linking Assets}
+Assuming we have a css,  a js and an img folder inside of public folder.
+%------------------------------------------------%
+\subsection{Stylesheets}
+\begin{verbatim}
+{{ HTML::style('css/custom.css') }}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Javascripts}
+\begin{verbatim}
+{{ HTML::script('js/custom.js') }}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Images}
+The parameters are url, alt text and attribute array respectively.
+\begin{verbatim}
+{{ HTML::image('img/logo.png', 'this is the logo', \
+    ['id' => 'logo', 'class' => 'logo']) }}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Generating Links}
+\begin{verbatim}
+{{ HTML::link('url', 'text', ['class' => 'navbar-brand']) }}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Generating Form Elements}
+%------------------------------------------------%
+\subsection{Opening and Closing Form}
+Opening without parameters sends the form to the same page.
+It also assumes post method. We can specify url and method.
+\begin{verbatim}
+{{ Form::open(['url' => 'process', 'method' => 'put']) }}
+{{ Form::close() }}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Text / Email Input}
+Takes three parameters: name, default value and attribute array.
+If default value is not desired pass null.
+\begin{verbatim}
+{{ Form::text('name', 'default value', \ 
+    ['class' => 'form-control']) }}
+{{ Form::email('email', null, ['placeholder' => 'email']) }}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Password Input}
+Takes two parameters: name and attribute array.
+\begin{verbatim}
+{{ Form::password('password', ['class' => 'form-control']) }}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Submit Input}
+takes two parameters: text on button and attribute array.
+\begin{verbatim}
+{{ Form::submit('Submit', ['class' => 'btn']) }}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Check if User is Logged in}
+\begin{verbatim}
+if(Auth::check()){
+    echo 'logged in';
+}
+if(Auth::guest()){
+    echo 'no user logged in';
+}
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Check User Attributes}
+First make sure user is logged in, then use the following:
+\begin{verbatim}
+if(Auth::user()->type == 'A'){
+    echo 'admin';
+}
+\end{verbatim}
+Notice if the check is not made we will get an error saying we are
+trying to access property of non-object.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Filters}
+%------------------------------------------------%
+\subsection{Creating Filters}
+One suitable place for declaring filters is \textbf{app/filters.php}.
+Here is a filter that checks whether user is admin, provided a user is
+in fact logged in.
+\begin{verbatim}
+Route::filter('admin', function
+{
+    if(Auth::check()){
+        if(Auth::user()->type == 'A') return;
+    }
+    return Redirect::to('/')->with([
+        'flashMessage' => 'access denied',
+        'alertClass' => 'alert-danger'
+    ]);
+});
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Adding Filters before Controller Functions}
+\begin{verbatim}
+public function __construct()
+{
+    $this->beforeFilter('auth');
+    $this->beforeFilter('admin',  \
+        ['only' => ['dashboard', 'manage']]);
+}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Form Validation}
+%------------------------------------------------%
+\subsection{Catch Inputs}
+\begin{verbatim}
+$inputs = Input::only('username', 'password');
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Define Rules}
+Rules can be defined models as static variables to keep the controller slim.
+\begin{verbatim}
+public static $rules = [
+    'email' => 'required|email|unique:users,email',
+    'password' => 'required|min:6',
+    'password2' => 'required|same:password'
+];
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Create Validator Object}
+\begin{verbatim}
+$v = Validator::make($inputs, User::$rules);
+if($v->passes()) echo 'validation passed';
+if($v-fails()) echo 'failed';
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Login Logout}
+%------------------------------------------------%
+\subsection{Login}
+Use the function \textbf{Auth::attempt()} to login.
+If successfull it returns true value.
+\begin{verbatim}
+if(Auth::attempt($inputs)) return Redirect::intended('/');
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Logout}
+\begin{verbatim}
+Auth::logout();
+return Redirect::to('/');
+\end{verbatim}
 
 \end{document}
