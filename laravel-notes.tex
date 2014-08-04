@@ -230,6 +230,29 @@ $v = Validator::make($inputs, User::$rules);
 if($v->passes()) echo 'validation passed';
 if($v-fails()) echo 'failed';
 \end{verbatim}
+%------------------------------------------------%
+\subsection{Show Error Messages in View}
+The \textbf{errors} variable is always present in session.
+\begin{verbatim}
+@if($errors->has('email'))
+    @foreach($errors->get('email') as $error)
+        {{ $error }}<br>
+    @endforeach
+@endif
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Custom Error Messages}
+We can add messages to our model and the call validator make with messages.
+\begin{verbatim}
+//in model
+public static $messaes = [
+    'email.required' => 'please enter your email address',
+    'password.required' => 'please enter your password'
+];
+
+//in controller
+$v = Validator::make($inputs, User::$rules, User::$messages);
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Login Logout}
