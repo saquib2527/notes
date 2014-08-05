@@ -270,4 +270,56 @@ Auth::logout();
 return Redirect::to('/');
 \end{verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{404 Page}
+In \textbf{app/start/global.php} (not compulsory) add the following snippet:
+\begin{verbatim}
+App::missing(function($error)
+{
+    return View::make('errors.404', ['active' => '404']);
+});
+\end{verbatim}
+Here we've assumed the view is inside \textbf{errros} folder.
+A point to note that this is actually going to return status of 200,
+as \textbf{View::make()} always returns OK.
+If we want to return status of 404, we can change the return statement to:
+\begin{verbatim}
+return Response::view('errors.404', [], 404);
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Database Row Not Found}
+%------------------------------------------------%
+\subsection{Using Models}
+\begin{verbatim}
+//in controller
+$c = Category::where('name', $name)->firstOrFail();
+
+//in app/start/global.php
+App::error(function(Illuminate\Database\Eloquent\ModelNotFoundException $e)
+{
+    return View::make('errors.404', ['active' => '404']);
+});
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Using Query Builder}
+\begin{verbatim}
+$c = DB::table('categories')->where('name', $name)->get();
+if(count($c) == 0){
+    return View::make('erros.404', ['active' => '404']);
+}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Optional Parameter to Controller Function}
+Say our controllers base url is \textbf{test}. The urls of
+the form \textbf{test/view/category} works fine with or without
+the assignment to \textbf{NULL}. But without this default assignment
+\textbf{test/view} won't work.
+\begin{verbatim}
+public function getView($category = NULL){
+    //stuff to do
+}
+\end{verbatim}
+
 \end{document}
