@@ -87,6 +87,11 @@ var Dog = function(){
     var name;
     var breed;
 };
+
+Dog.prototype.speak = speak;
+
+var rover = new Dog();
+rover.speak('woof'); //outputs 'woof' in console
 \end{verbatim}
 The benefit of extending function in this way is we can add the function speak to other classes.
 
@@ -236,7 +241,11 @@ var myModule = (function(){
     };
 })();
 
-myModule.speak().run({speed: "fast"}).speak({say: "whatever bro"}).run();
+myModule.speak().run({
+    speed: "fast"
+}).speak({
+    say: "whatever bro"
+}).run();
 //hello
 //running...fast
 //whatever bro
