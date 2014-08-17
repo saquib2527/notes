@@ -10,6 +10,26 @@
 \maketitle
 \tableofcontents
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Starters}
+%------------------------------------------------%
+\subsection{Install Django}
+\begin{verbatim}
+sudo pip install -U django==1.5.4
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Check Django Version}
+\begin{verbatim}
+python -c "import django; print(django.get_version())"
+\end{verbatim}
+%------------------------------------------------%
+\subsection{Create Project and Run Server}
+\begin{verbatim}
+django-admin.py startproject tango_with_django_project
+cd tango_with_django_project
+python manage.py runserver
+\end{verbatim}
+Browse to \textbf{127.0.0.1:8000} to view initial web page.
+\textbf{Ctrl+C} stops server.
 
 \end{document}
