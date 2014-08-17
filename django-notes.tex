@@ -32,4 +32,61 @@ python manage.py runserver
 Browse to \textbf{127.0.0.1:8000} to view initial web page.
 \textbf{Ctrl+C} stops server.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Django Application}
+A Django project is a collection of configurations and
+applications that together make up a given web application
+or website. This results in reusable software components.
+\begin{verbatim}
+python manage.py startapp rango
+\end{verbatim}
+To make our django project aware of this application we
+need to modify our \textbf{settings.py} file. In the
+tuple \textbf{INSTALLED\_APPS} we need to add the name
+of the newly created application, in this case `rango'.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Views}
+Our application folder has a \textbf{views.py} file
+that we can manipulate for setting views.
+\begin{verbatim}
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse('Rango says hello world!')
+\end{verbatim}
+Now we must map a \textbf{URL} to the view.
+%------------------------------------------------%
+\subsection{Mapping URLs}
+\begin{itemize}
+\item mappings go into urls.py file
+\item project config folder has one, apps can also have theirs
+\item we could add all patterns to project config folder
+\item best practice is to divide the mappings and assembling
+\item this ensures loose coupling
+\item a tuple must be present named \textbf{urlpatterns}
+\item it contains calls to django.confs.urls.url()
+\item first param to url is the pattern
+\item second tells which view (function) to render
+\item third param is optional, used to distinguish one mapping from another
+\item to make our project aware of apps mapping we need to modify urls.py
+in project config folder. Basically we need to add the following as the 
+last member of \textbf{urlpatterns} tuple.
+\begin{verbatim}
+url(r'^rango/', include('rango.urls')),
+\end{verbatim}
+\item in the previous case anything after rango in url is handled by app
+specific urls
+\end{itemize}
+Sample mapping of rango app:
+\begin{verbatim}
+from django.conf.urls import patterns, url
+from rango import views
+
+urlpatterns = patterns('',
+        url(r'^$', views.index, name='index'))
+\end{verbatim}
+
 \end{document}
